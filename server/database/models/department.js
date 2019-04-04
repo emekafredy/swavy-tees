@@ -9,8 +9,8 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING
     }
   }, {});
-  Department.associate = (models) => {
-    // associations can be defined here
-  };
+  // Department.associate = (models) => {
+  //   // associations can be defined here
+  // };
   return Department;
 };

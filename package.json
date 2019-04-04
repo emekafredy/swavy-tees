@@ -4,7 +4,7 @@
   "description": "An e-commerce app, dealing primarily on t-shirt sales",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --no-cache  --detectOpenHandles --runInBand --forceExit",
     "dev": "nodemon --exec babel-node server.js",
     "migrations": "sequelize db:migrate",
     "undo:migrations": "sequelize db:migrate:undo:all"
@@ -13,13 +13,34 @@
   "author": "Emeka",
   "license": "MIT",
   "dependencies": {
+    "@babel/preset-env": "^7.4.3",
     "babel-cli": "^6.26.0",
+    "babel-eslint": "^10.0.1",
     "babel-preset-env": "^1.7.0",
     "body-parser": "^1.18.3",
     "dotenv": "^7.0.0",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
     "express": "^4.16.4",
+    "jest": "^24.7.1",
     "morgan": "^1.9.1",
     "mysql2": "^1.6.5",
-    "sequelize": "^5.2.9"
+    "sequelize": "^5.2.9",
+    "supertest": "^4.0.2"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "server/**/*.js"
+    ],
+    "testMatch": [
+      "<rootDir>/server/**/__tests__/**/?(*.)(spec|test)js",
+      "<rootDir>/server/**/?(*.)(spec|test).js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/server/database"
+    ],
+    "testEnvironment": "node"
   }
 }

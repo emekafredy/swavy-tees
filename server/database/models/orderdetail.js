@@ -21,8 +21,8 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL
     }
   }, {});
-  OrderDetail.associate = (models) => {
-    // associations can be defined here
-  };
+  // OrderDetail.associate = (models) => {
+  //   // associations can be defined here
+  // };
   return OrderDetail;
 };

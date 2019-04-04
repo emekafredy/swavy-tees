@@ -36,8 +36,8 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING
     }
   }, {});
-  Order.associate = (models) => {
-    // associations can be defined here
-  };
+  // Order.associate = (models) => {
+  //   // associations can be defined here
+  // };
   return Order;
 };
