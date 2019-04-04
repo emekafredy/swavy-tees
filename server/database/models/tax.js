@@ -7,8 +7,8 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     }
   }, {});
-  Tax.associate = (models) => {
-    // associations can be defined here
-  };
+  // Tax.associate = (models) => {
+  //   // associations can be defined here
+  // };
   return Tax;
 };

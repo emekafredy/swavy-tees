@@ -1,15 +1,15 @@
-import { User } from '../../database/models'
+import models from '../../database/models';
 
 class AuthController {
   static async getUsers(req, res) {
     try {
-      const users = await User.findAll();
+      const users = await models.User.findAll();
       return res.status(200).json({
         success: true,
         message: 'Users succesfully retrieved',
         users
       });
-    } catch(error) {
+    } catch (error) {
       throw new Error('Server error');
     }
   }

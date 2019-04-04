@@ -4,8 +4,8 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING
     }
   }, {});
-  ShippingRegion.associate = (models) => {
-    // associations can be defined here
-  };
+  // ShippingRegion.associate = (models) => {
+  //   // associations can be defined here
+  // };
   return ShippingRegion;
 };

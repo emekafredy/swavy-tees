@@ -6,11 +6,11 @@ export default (sequelize, DataTypes) => {
     },
     categoryId: {
       allowNull: false,
-      type:  DataTypes.INTEGER
+      type: DataTypes.INTEGER
     }
   }, {});
-  ProductCategory.associate = (models) => {
-    // associations can be defined here
-  };
+  // ProductCategory.associate = (models) => {
+  //   // associations can be defined here
+  // };
   return ProductCategory;
 };

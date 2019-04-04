@@ -1,19 +1,19 @@
 export default (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
     firstName: {
-      allowNull:false,
+      allowNull: false,
       type: DataTypes.STRING
     },
     lastName: {
-      allowNull:false,
+      allowNull: false,
       type: DataTypes.STRING
     },
     email: {
-      allowNull:false,
+      allowNull: false,
       type: DataTypes.STRING
     },
     password: {
-      allowNull:false,
+      allowNull: false,
       type: DataTypes.STRING
     },
     creditCard: {
@@ -35,13 +35,13 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING
     },
     role: {
-      allowNull:false,
+      allowNull: false,
       type: DataTypes.ENUM('Customer', 'Admin'),
       defaultValue: 'Customer'
     }
   }, {});
-  User.associate = function(models) {
-    // associations can be defined here
-  };
+  // User.associate = function(models) {
+  //   // associations can be defined here
+  // };
   return User;
 };

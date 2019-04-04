@@ -13,8 +13,8 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING
     }
   }, {});
-  Category.associate = (models) => {
-    // associations can be defined here
-  };
+  // Category.associate = (models) => {
+  //   // associations can be defined here
+  // };
   return Category;
 };

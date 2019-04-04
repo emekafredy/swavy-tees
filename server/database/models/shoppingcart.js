@@ -13,8 +13,8 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.DATE
     }
   }, {});
-  ShoppingCart.associate = (models) => {
-    // associations can be defined here
-  };
+  // ShoppingCart.associate = (models) => {
+  //   // associations can be defined here
+  // };
   return ShoppingCart;
 };

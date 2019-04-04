@@ -30,8 +30,8 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     }
   }, {});
-  Product.associate = (models) => {
-    // associations can be defined here
-  };
+  // Product.associate = (models) => {
+  //   // associations can be defined here
+  // };
   return Product;
 };
