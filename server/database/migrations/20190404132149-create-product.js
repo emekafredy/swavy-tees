@@ -29,8 +29,11 @@ module.exports = {
     thumbnail: {
       type: Sequelize.STRING
     },
-    attributes: {
-      type: Sequelize.JSON
+    color: {
+      type: Sequelize.STRING
+    },
+    size: {
+      type: Sequelize.STRING
     },
     display: {
       type: Sequelize.INTEGER
