@@ -2,11 +2,11 @@
 An e-commerce app, dealing primarily on t-shirt sales
 
 ## Badges
-[![Build Status](https://travis-ci.org/emekafredy/swavy-tees.svg?branch=develop)](https://travis-ci.org/emekafredy/swavy-tees)     \|
-[![codecov](https://codecov.io/gh/emekafredy/m-tracker-graphql/branch/develop/graph/badge.svg)](https://codecov.io/gh/emekafredy/m-tracker-graphql)     \|
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f08012a6433b438ba2564c822207d324)](https://www.codacy.com/app/emekafredy/swavy-tees?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=emekafredy/swavy-tees&amp;utm_campaign=Badge_Grade)
+[![DeepScan grade](https://deepscan.io/api/teams/2900/projects/4836/branches/38490/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=2900&pid=4836&bid=38490) \|
+[![Build Status](https://travis-ci.org/emekafredy/swavy-tees.svg?branch=develop)](https://travis-ci.org/emekafredy/swavy-tees) \|
+[![codecov](https://codecov.io/gh/emekafredy/m-tracker-graphql/branch/develop/graph/badge.svg)](https://codecov.io/gh/emekafredy/m-tracker-graphql) \|
 
 ## Stack
-[NodeJS](https://nodejs.org/en/)     \|
-[ExpresJS](https://expressjs.com/)     \|
-[MySQL](https://www.mysql.com/)
+[NodeJS](https://nodejs.org/en/) \|
+[ExpresJS](https://expressjs.com/) \|
+[MySQL](https://docs.mongodb.com/)
