@@ -13,12 +13,8 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING
     }
   }, {});
-  Category.associate = (models) => {
-    Category.belongsToMany(models.Product, {
-      through: 'ProductCategories',
-      as: 'products',
-      foreignKey: 'categoryId',
-    });
-  };
+  // Category.associate = (models) => {
+  //   // associations can be defined here
+  // };
   return Category;
 };

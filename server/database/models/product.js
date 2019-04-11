@@ -23,22 +23,15 @@ export default (sequelize, DataTypes) => {
     thumbnail: {
       type: DataTypes.STRING
     },
-    color: {
-      type: DataTypes.STRING
-    },
-    size: {
-      type: DataTypes.STRING
+    attributes: {
+      type: DataTypes.JSON
     },
     display: {
       type: DataTypes.INTEGER
     }
   }, {});
-  Product.associate = (models) => {
-    Product.belongsToMany(models.Category, {
-      through: 'ProductCategories',
-      as: 'categories',
-      foreignKey: 'productId',
-    });
-  };
+  // Product.associate = (models) => {
+  //   // associations can be defined here
+  // };
   return Product;
 };
