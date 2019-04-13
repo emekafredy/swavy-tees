@@ -6,11 +6,10 @@ export default (sequelize, DataTypes) => {
     },
     name: {
       allowNull: false,
-      type: DataTypes.STRING
+      type: DataTypes.STRING(100)
     },
     description: {
-      allowNull: false,
-      type: DataTypes.STRING
+      type: DataTypes.STRING(1000)
     }
   }, {});
   Category.associate = (models) => {

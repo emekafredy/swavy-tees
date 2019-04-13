@@ -1,10 +1,12 @@
 export default (sequelize, DataTypes) => {
   const Tax = sequelize.define('Tax', {
     taxType: {
-      type: DataTypes.STRING
+      allowNull: false,
+      type: DataTypes.STRING(100)
     },
     taxPercentage: {
-      type: DataTypes.INTEGER
+      allowNull: false,
+      type: DataTypes.NUMERIC(10, 2)
     }
   }, {});
   // Tax.associate = (models) => {

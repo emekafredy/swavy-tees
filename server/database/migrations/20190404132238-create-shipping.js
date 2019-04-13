@@ -6,13 +6,16 @@ module.exports = {
       primaryKey: true,
       type: Sequelize.INTEGER
     },
-    shippingCost: {
-      type: Sequelize.DECIMAL
-    },
     shippingType: {
-      type: Sequelize.STRING
+      allowNull: false,
+      type: Sequelize.STRING(100)
+    },
+    shippingCost: {
+      allowNull: false,
+      type: Sequelize.DECIMAL(10, 2)
     },
     shippingRegionId: {
+      allowNull: false,
       type: Sequelize.INTEGER
     },
     createdAt: {

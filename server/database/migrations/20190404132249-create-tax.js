@@ -7,10 +7,12 @@ module.exports = {
       type: Sequelize.INTEGER
     },
     taxType: {
-      type: Sequelize.STRING
+      allowNull: false,
+      type: Sequelize.STRING(100)
     },
     taxPercentage: {
-      type: Sequelize.INTEGER
+      allowNull: false,
+      type: Sequelize.NUMERIC(10, 2)
     },
     createdAt: {
       allowNull: false,

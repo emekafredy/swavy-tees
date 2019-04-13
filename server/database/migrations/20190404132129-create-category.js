@@ -12,18 +12,15 @@ module.exports = {
     },
     name: {
       allowNull: false,
-      type: Sequelize.STRING
+      type: Sequelize.STRING(100)
     },
     description: {
-      allowNull: false,
-      type: Sequelize.STRING
+      type: Sequelize.STRING(1000)
     },
     createdAt: {
-      allowNull: false,
       type: Sequelize.DATE
     },
     updatedAt: {
-      allowNull: false,
       type: Sequelize.DATE
     }
   }),

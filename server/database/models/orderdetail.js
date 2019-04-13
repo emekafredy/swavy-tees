@@ -8,9 +8,17 @@ export default (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.INTEGER
     },
+    sizeId: {
+      allowNull: false,
+      type: DataTypes.INTEGER
+    },
+    colorId: {
+      allowNull: false,
+      type: DataTypes.INTEGER
+    },
     productName: {
       allowNull: false,
-      type: DataTypes.STRING
+      type: DataTypes.STRING(100)
     },
     quantity: {
       allowNull: false,
@@ -18,7 +26,7 @@ export default (sequelize, DataTypes) => {
     },
     unitCost: {
       allowNull: false,
-      type: DataTypes.DECIMAL
+      type: DataTypes.DECIMAL(10, 2)
     }
   }, {});
   // OrderDetail.associate = (models) => {

@@ -68,7 +68,7 @@ class UserProfileValidator {
     try {
       const errors = {};
       const {
-        firstName, lastName, address, city, region, country, phone
+        firstName, lastName, address1, address2, city, region, postalCode, country, dayPhone, eveningPhone, mobilePhone
       } = req.body;
 
       if (firstName && !validator.isLength(firstName, { min: 3, max: 200 })) {
@@ -79,8 +79,12 @@ class UserProfileValidator {
         errors.lastName = 'Your last name must be between 3 and 200 characters.';
       }
 
-      if (address && !validator.isLength(address, { min: 3, max: 200 })) {
-        errors.address = 'Your address should have between 10 and 300 characters.';
+      if (address1 && !validator.isLength(address1, { min: 3, max: 200 })) {
+        errors.address1 = 'Your address should have between 10 and 300 characters.';
+      }
+
+      if (address2 && !validator.isLength(address2, { min: 3, max: 200 })) {
+        errors.address2 = 'Your address should have between 10 and 300 characters.';
       }
 
       if (city && !validator.isLength(city, { min: 3, max: 200 })) {
@@ -91,12 +95,22 @@ class UserProfileValidator {
         errors.region = 'Your region should have between 3 and 200 characters.';
       }
 
+      if (postalCode && !validator.isLength(postalCode, { max: 100 })) {
+        errors.postalCode = 'Your postal code should not be more than 100 characters.';
+      }
+
       if (country && !validator.isLength(country, { min: 3, max: 200 })) {
         errors.country = 'Your country name should be between 3 and 200 characters.';
       }
 
-      if (phone && !validator.isLength(phone, { min: 10, max: 200 })) {
-        errors.phone = 'Please enter a valid phone number';
+      if (dayPhone && !validator.isLength(dayPhone, { min: 10, max: 200 })) {
+        errors.dayPhone = 'Please enter a valid phone number';
+      }
+      if (eveningPhone && !validator.isLength(eveningPhone, { min: 10, max: 200 })) {
+        errors.eveningPhone = 'Please enter a valid phone number';
+      }
+      if (mobilePhone && !validator.isLength(mobilePhone, { min: 10, max: 200 })) {
+        errors.mobilePhone = 'Please enter a valid phone number';
       }
 
       errorHandler(res, errors, 400, next);

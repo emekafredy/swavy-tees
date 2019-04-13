@@ -11,7 +11,7 @@ module.exports = {
         "sourceType": "module"
     },
     "rules": {
-        "max-len": ["warn", { "code": 105, "ignoreUrls": true }],
+        "max-len": ["warn", { "code": 120, "ignoreUrls": true }],
         "consistent-return": 0,
         "comma-dangle": 0,
         "no-fallthrough": 0,

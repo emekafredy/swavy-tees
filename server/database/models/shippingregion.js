@@ -1,7 +1,8 @@
 export default (sequelize, DataTypes) => {
   const ShippingRegion = sequelize.define('ShippingRegion', {
     shippingRegion: {
-      type: DataTypes.STRING
+      allowNull: false,
+      type: DataTypes.STRING(100)
     }
   }, {});
   // ShippingRegion.associate = (models) => {

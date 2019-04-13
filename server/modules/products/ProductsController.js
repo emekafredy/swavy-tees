@@ -1,5 +1,6 @@
 import { Op } from 'sequelize';
 import models from '../../database/models';
+import { errorResponse } from '../../helpers/errorResponse';
 
 class ProductsController {
   static getPagination(req) {
@@ -48,10 +49,8 @@ class ProductsController {
 
       const products = await models.Product.findAndCountAll(queryClause);
       if (products.rows.length < 1) {
-        return res.status(404).json({
-          success: false,
-          message: `No product found for ${category || keyword || 'now'}`,
-        });
+        const error = `No product found for ${category || keyword || 'now'}`;
+        return errorResponse(error, 404, res);
       }
       const pages = Math.ceil(products.count / limit);
       const { count, rows } = products;
@@ -64,7 +63,7 @@ class ProductsController {
         count,
       });
     } catch (error) {
-      throw new Error(error);
+      return errorResponse(error, 500, res);
     }
   }
 
@@ -85,14 +84,23 @@ class ProductsController {
     const { id } = req.params;
     try {
       const product = await models.Product.findOne({
-        where: { id }
+        where: { id },
+        include: [{
+          model: models.Color,
+          as: 'colors',
+          attributes: { exclude: ['createdAt', 'updatedAt'], },
+          through: { attributes: [] }
+        }, {
+          model: models.Size,
+          as: 'sizes',
+          attributes: { exclude: ['createdAt', 'updatedAt'] },
+          through: { attributes: [] }
+        }]
       });
 
       if (!product) {
-        return res.status(404).json({
-          success: false,
-          message: 'product not found',
-        });
+        const error = 'Product not found';
+        return errorResponse(error, 404, res);
       }
 
       return res.status(200).json({
@@ -101,7 +109,7 @@ class ProductsController {
         product
       });
     } catch (error) {
-      throw new Error(error);
+      return errorResponse(error, 500, res);
     }
   }
 }

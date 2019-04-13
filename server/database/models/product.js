@@ -2,42 +2,52 @@ export default (sequelize, DataTypes) => {
   const Product = sequelize.define('Product', {
     name: {
       allowNull: false,
-      type: DataTypes.STRING
+      type: DataTypes.STRING(100)
     },
     description: {
-      type: DataTypes.STRING
+      allowNull: false,
+      type: DataTypes.STRING(1000)
     },
     price: {
       allowNull: false,
-      type: DataTypes.DECIMAL
+      type: DataTypes.DECIMAL(10, 2)
     },
     discountedPrice: {
-      type: DataTypes.DECIMAL
+      allowNull: false,
+      type: DataTypes.DECIMAL(10, 2),
+      defaultValue: 0.00,
     },
     image: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING(150)
     },
     image2: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING(150)
     },
     thumbnail: {
-      type: DataTypes.STRING
-    },
-    color: {
-      type: DataTypes.STRING
-    },
-    size: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING(150)
     },
     display: {
-      type: DataTypes.INTEGER
+      allowNull: false,
+      type: DataTypes.INTEGER(6),
+      defaultValue: 0,
     }
   }, {});
   Product.associate = (models) => {
-    Product.belongsToMany(models.Category, {
+    const { Category, Color, Size } = models;
+    Product.belongsToMany(Category, {
       through: 'ProductCategories',
       as: 'categories',
       foreignKey: 'productId',
+    });
+    Product.belongsToMany(Color, {
+      through: 'ProductColors',
+      as: 'colors',
+      foreignKey: 'productId'
+    });
+    Product.belongsToMany(Size, {
+      through: 'ProductSizes',
+      as: 'sizes',
+      foreignKey: 'productId'
     });
   };
   return Product;

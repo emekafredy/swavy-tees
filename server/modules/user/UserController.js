@@ -2,6 +2,7 @@ import { hash, compare } from 'bcrypt';
 import models from '../../database/models';
 import { generateToken } from '../../helpers/generateToken';
 import { trimData } from '../../helpers/trimData';
+import { errorResponse } from '../../helpers/errorResponse';
 
 class UserController {
   static async registerUser(req, res) {
@@ -24,31 +25,34 @@ class UserController {
         token
       });
     } catch (error) {
-      throw new Error('Server error');
+      return errorResponse(error, 500, res);
     }
   }
 
   static async userLogin(req, res) {
     const { email, password } = req.body;
-
-    const user = await models.User.findOne({
-      where: { email }
-    });
-
-    const validPassword = await compare(password, user.password);
-    if (!user || !validPassword) {
-      return res.status(400).json({
-        success: false,
-        message: 'Email or password is incorrect',
+    try {
+      const user = await models.User.findOne({
+        where: { email }
       });
+  
+      const validPassword = await compare(password, user.password);
+      if (!user || !validPassword) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email or password is incorrect',
+        });
+      }
+  
+      const token = await generateToken(user);
+      return res.status(200).json({
+        success: true,
+        message: 'Successful Login',
+        token
+      });
+    } catch (error) {
+      return errorResponse(error, 500, res);
     }
-
-    const token = await generateToken(user);
-    return res.status(200).json({
-      success: true,
-      message: 'Successful Login',
-      token
-    });
   }
 
   static async getUsers(req, res) {
@@ -60,7 +64,7 @@ class UserController {
         users
       });
     } catch (error) {
-      throw new Error('Server error');
+      return errorResponse(error, 500, res);
     }
   }
 
@@ -72,10 +76,8 @@ class UserController {
         attributes: { exclude: ['password'] }
       });
       if (!user) {
-        return res.status(404).json({
-          success: false,
-          message: 'User does not exist'
-        });
+        const error = 'User does not exist';
+        return errorResponse(error, 404, res);
       }
       return res.status(200).json({
         success: true,
@@ -83,14 +85,14 @@ class UserController {
         user
       });
     } catch (error) {
-      throw new Error('Server error');
+      return errorResponse(error, 500, res);
     }
   }
 
   static async updateProfile(req, res) {
     const userId = req.user;
     const {
-      firstName, lastName, address, city, region, country, phone
+      firstName, lastName, address1, address2, city, region, postalCode, country, dayPhone, eveningPhone, mobilePhone
     } = req.body;
     try {
       const user = await models.User.findOne({
@@ -98,19 +100,21 @@ class UserController {
         attributes: { exclude: ['password'] }
       });
       if (!user) {
-        return res.status(404).json({
-          success: false,
-          message: 'User does not exist'
-        });
+        const error = 'User does not exist';
+        return errorResponse(error, 404, res);
       }
       const userUpdateData = {
         firstName: firstName || (user.firstName || ''),
         lastName: lastName || (user.lastName || ''),
-        address: address || (user.address || ''),
+        address1: address1 || (user.address1 || ''),
+        address2: address2 || (user.address2 || ''),
         city: city || (user.city || ''),
         region: region || (user.region || ''),
+        postalCode: postalCode || (user.postalCode || ''),
         country: country || (user.country || ''),
-        phone: phone || (user.phone || ''),
+        dayPhone: dayPhone || (user.dayPhone || ''),
+        eveningPhone: eveningPhone || (user.eveningPhone || ''),
+        mobilePhone: mobilePhone || (user.mobilePhone || ''),
       };
       await trimData(userUpdateData);
       const updatedUser = await user.update(userUpdateData);
@@ -120,7 +124,7 @@ class UserController {
         updatedUser
       });
     } catch (error) {
-      throw new Error('Server error');
+      return errorResponse(error, 500, res);
     }
   }
 }

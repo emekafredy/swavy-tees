@@ -1,12 +1,15 @@
 export default (sequelize, DataTypes) => {
   const Shipping = sequelize.define('Shipping', {
-    shippingCost: {
-      type: DataTypes.DECIMAL
-    },
     shippingType: {
-      type: DataTypes.STRING
+      allowNull: false,
+      type: DataTypes.STRING(100)
+    },
+    shippingCost: {
+      allowNull: false,
+      type: DataTypes.DECIMAL(10, 2)
     },
     shippingRegionId: {
+      allowNull: false,
       type: DataTypes.INTEGER
     }
   }, {});
