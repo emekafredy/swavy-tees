@@ -7,7 +7,8 @@ module.exports = {
       type: Sequelize.INTEGER
     },
     shippingRegion: {
-      type: Sequelize.STRING
+      allowNull: false,
+      type: Sequelize.STRING(100)
     },
     createdAt: {
       allowNull: false,

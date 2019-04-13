@@ -8,32 +8,34 @@ module.exports = {
     },
     name: {
       allowNull: false,
-      type: Sequelize.STRING
+      type: Sequelize.STRING(100)
     },
     description: {
-      type: Sequelize.STRING
+      allowNull: false,
+      type: Sequelize.STRING(1000)
     },
     price: {
       allowNull: false,
-      type: Sequelize.DECIMAL
+      type: Sequelize.DECIMAL(10, 2)
     },
     discountedPrice: {
-      type: Sequelize.DECIMAL
+      allowNull: false,
+      type: Sequelize.DECIMAL(10, 2),
+      defaultValue: 0.00,
     },
     image: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING(150)
     },
     image2: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING(150)
     },
     thumbnail: {
-      type: Sequelize.STRING
-    },
-    attributes: {
-      type: Sequelize.JSON
+      type: Sequelize.STRING(150)
     },
     display: {
-      type: Sequelize.INTEGER
+      allowNull: false,
+      type: Sequelize.INTEGER(6),
+      defaultValue: 0,
     },
     createdAt: {
       allowNull: false,

@@ -14,9 +14,17 @@ module.exports = {
       allowNull: false,
       type: Sequelize.INTEGER
     },
+    sizeId: {
+      allowNull: false,
+      type: Sequelize.INTEGER
+    },
+    colorId: {
+      allowNull: false,
+      type: Sequelize.INTEGER
+    },
     productName: {
       allowNull: false,
-      type: Sequelize.STRING
+      type: Sequelize.STRING(100)
     },
     quantity: {
       allowNull: false,
@@ -24,7 +32,7 @@ module.exports = {
     },
     unitCost: {
       allowNull: false,
-      type: Sequelize.DECIMAL
+      type: Sequelize.DECIMAL(10, 2)
     },
     createdAt: {
       allowNull: false,

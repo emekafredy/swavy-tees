@@ -2,7 +2,8 @@ export default (sequelize, DataTypes) => {
   const Order = sequelize.define('Order', {
     totalAmount: {
       allowNull: false,
-      type: DataTypes.DECIMAL
+      type: DataTypes.DECIMAL(10, 2),
+      defaultValue: 0.00
     },
     createdOn: {
       allowNull: false,
@@ -17,10 +18,10 @@ export default (sequelize, DataTypes) => {
       defaultValue: 'Ordered',
     },
     comments: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING(255)
     },
     authCode: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING(50)
     },
     customerId: {
       allowNull: false,
@@ -33,7 +34,7 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
     reference: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING(50)
     }
   }, {});
   // Order.associate = (models) => {

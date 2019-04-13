@@ -8,37 +8,49 @@ module.exports = {
     },
     firstName: {
       allowNull: false,
-      type: Sequelize.STRING
+      type: Sequelize.STRING(50)
     },
     lastName: {
       allowNull: false,
-      type: Sequelize.STRING
+      type: Sequelize.STRING(50)
     },
     email: {
       allowNull: false,
-      type: Sequelize.STRING
+      type: Sequelize.STRING(100)
     },
     password: {
       allowNull: false,
-      type: Sequelize.STRING
+      type: Sequelize.STRING(100)
     },
     creditCard: {
       type: Sequelize.STRING
     },
-    address: {
-      type: Sequelize.STRING
+    address1: {
+      type: Sequelize.STRING(100)
+    },
+    address2: {
+      type: Sequelize.STRING(100)
     },
     city: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING(100)
     },
     region: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING(100)
+    },
+    postalCode: {
+      type: Sequelize.STRING(100)
     },
     country: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING(100)
     },
-    phone: {
-      type: Sequelize.STRING
+    dayPhone: {
+      type: Sequelize.STRING(100)
+    },
+    eveningPhone: {
+      type: Sequelize.STRING(100)
+    },
+    mobilePhone: {
+      type: Sequelize.STRING(100)
     },
     role: {
       allowNull: false,

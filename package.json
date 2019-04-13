@@ -7,7 +7,8 @@
     "test": "jest --no-cache  --detectOpenHandles --runInBand --forceExit",
     "dev": "nodemon --exec babel-node server.js",
     "migrations": "sequelize db:migrate",
-    "undo:migrations": "sequelize db:migrate:undo:all"
+    "undo:migrations": "sequelize db:migrate:undo:all",
+    "seed": "sequelize db:seed:all"
   },
   "repository": "https://github.com/emekafredy/swavy-tees.git",
   "author": "Emeka",

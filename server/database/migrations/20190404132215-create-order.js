@@ -7,7 +7,8 @@ module.exports = {
       type: Sequelize.INTEGER
     },
     totalAmount: {
-      type: Sequelize.DECIMAL
+      type: Sequelize.DECIMAL(10, 2),
+      defaultValue: 0.00
     },
     createdOn: {
       allowNull: false,
@@ -22,10 +23,10 @@ module.exports = {
       defaultValue: 'Ordered',
     },
     comments: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING(255)
     },
     authCode: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING(50)
     },
     customerId: {
       allowNull: false,
@@ -38,7 +39,7 @@ module.exports = {
       type: Sequelize.INTEGER
     },
     reference: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING(50)
     },
     createdAt: {
       allowNull: false,

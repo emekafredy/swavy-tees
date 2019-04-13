@@ -2,11 +2,10 @@ export default (sequelize, DataTypes) => {
   const Department = sequelize.define('Department', {
     name: {
       allowNull: false,
-      type: DataTypes.STRING
+      type: DataTypes.STRING(100)
     },
     description: {
-      allowNull: false,
-      type: DataTypes.STRING
+      type: DataTypes.STRING(1000)
     }
   }, {});
   // Department.associate = (models) => {
