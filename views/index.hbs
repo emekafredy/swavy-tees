@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <title>Document</title>
+</head>
+<body>
+  <div class="container">
+    <hr />
+    <div class="jumbotron text-center">
+      <p> Swavy Tees </p>
+      <h1> PAYMENT FOR ORDER </h1>
+    </div>
+    <hr />
+    <div class="card">
+      <h5 class="card-header">Payment</h5>
+      <div class="card-body">
+        <h5 class="card-title">NB</h5>
+        <p class="card-text">Shipping your order does not take more than 24 hours. Delivery takes a maximum of 3 working days</p>
+        <form action="/api/charge" method="POST">
+          <script
+            src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+            data-key="pk_test_Dd2IUOC4Lxnin6RXIjuSzGeC"
+            data-name="Order Payment"
+            data-description="Pay with your registered email address"
+            data-image="/img/swavy.jpg"
+            data-locale="auto">
+          </script>
+          <script>
+            document.getElementsByClassName('stripe-button-el')[0].style.display = 'none';
+          </script>
+          <button type="submit" class="btn btn-success">
+            Purchase Items
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

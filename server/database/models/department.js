@@ -8,8 +8,10 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING(1000)
     }
   }, {});
-  // Department.associate = (models) => {
-  //   // associations can be defined here
-  // };
+  Department.associate = (models) => {
+    Department.hasMany(models.Category, {
+      foreignKey: 'departmentId'
+    });
+  };
   return Department;
 };

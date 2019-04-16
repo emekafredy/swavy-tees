@@ -13,10 +13,14 @@ export default (sequelize, DataTypes) => {
     }
   }, {});
   Category.associate = (models) => {
-    Category.belongsToMany(models.Product, {
+    const { Product, Department } = models;
+    Category.belongsToMany(Product, {
       through: 'ProductCategories',
       as: 'products',
       foreignKey: 'categoryId',
+    });
+    Category.belongsTo(Department, {
+      foreignKey: 'departmentId'
     });
   };
   return Category;

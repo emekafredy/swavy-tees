@@ -10,10 +10,6 @@ module.exports = {
       type: Sequelize.DECIMAL(10, 2),
       defaultValue: 0.00
     },
-    createdOn: {
-      allowNull: false,
-      type: Sequelize.DATE
-    },
     shippedOn: {
       type: Sequelize.DATE
     },
@@ -40,6 +36,26 @@ module.exports = {
     },
     reference: {
       type: Sequelize.STRING(50)
+    },
+    productId: {
+      allowNull: false,
+      type: Sequelize.INTEGER
+    },
+    sizeId: {
+      allowNull: false,
+      type: Sequelize.INTEGER
+    },
+    colorId: {
+      allowNull: false,
+      type: Sequelize.INTEGER
+    },
+    quantity: {
+      allowNull: false,
+      type: Sequelize.INTEGER
+    },
+    unitCost: {
+      allowNull: false,
+      type: Sequelize.DECIMAL(10, 2)
     },
     createdAt: {
       allowNull: false,

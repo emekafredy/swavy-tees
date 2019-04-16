@@ -37,6 +37,11 @@ module.exports = {
     region: {
       type: Sequelize.STRING(100)
     },
+    shippingRegionId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      defaultValue: 1
+    },
     postalCode: {
       type: Sequelize.STRING(100)
     },
@@ -54,7 +59,7 @@ module.exports = {
     },
     role: {
       allowNull: false,
-      type: Sequelize.ENUM('Customer', 'Admin'),
+      type: Sequelize.ENUM('Customer', 'Admin', 'Super Admin'),
       defaultValue: 'Customer'
     },
     createdAt: {

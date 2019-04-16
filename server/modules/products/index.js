@@ -14,6 +14,11 @@ Router.get(
 );
 
 Router.get(
+  '/departments',
+  ProductsController.getDepartments
+);
+
+Router.get(
   '/products/product/:id',
   ProductsController.getProductById
 );
