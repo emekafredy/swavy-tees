@@ -63,9 +63,9 @@ class CartsController {
       });
 
       if (cart.length !== 0) {
-        const productsQuantity = [];
-        const subTotalPrices = [];
-        const productsDiscount = [];
+        let productsQuantity = 0;
+        let subTotalPrice = 0;
+        let productsDiscount = 0;
 
         const cartValues = await Promise.all(cart.map(async (product) => {
           const colors = await models.Color.findAll({ where: { id: product.colorId } });
@@ -79,9 +79,10 @@ class CartsController {
 
           const salesDiscount = parseFloat(product.Product.discountedPrice);
           const salesPrice = parseFloat(product.quantity * product.Product.price);
-          subTotalPrices.push(salesPrice);
-          productsDiscount.push(salesDiscount);
-          productsQuantity.push(product.quantity);
+          productsDiscount += salesDiscount;
+          subTotalPrice += salesPrice;
+          productsQuantity += product.quantity;
+
           return {
             user: product.customerId,
             quantity: product.quantity,
@@ -96,20 +97,18 @@ class CartsController {
           };
         }));
 
-        const subTotal = subTotalPrices.reduce((accumulator, currentValue) => accumulator + currentValue);
-        const discount = productsDiscount.reduce((accumulator, currentValue) => accumulator + currentValue);
         return res.status(200).json({
           success: true,
           message: 'cart succesfully retrieved',
           cart: cartValues,
-          totalItems: productsQuantity.reduce((accumulator, currentValue) => accumulator + currentValue),
-          subTotalPrice: subTotal,
-          discount,
-          totalPrice: subTotal - discount,
+          totalItems: productsQuantity,
+          subTotalPrice,
+          discount: productsDiscount,
+          totalPrice: subTotalPrice - productsDiscount,
         });
       }
-      const error = 'No product found in your cart';
-      return errorResponse(error, 404, res);
+      const message = 'No product found in your cart';
+      return errorResponse(message, 200, res);
     } catch (error) {
       return errorResponse(error, 500, res);
     }

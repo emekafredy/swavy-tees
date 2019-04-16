@@ -31,6 +31,11 @@ export default (sequelize, DataTypes) => {
     region: {
       type: DataTypes.STRING(100)
     },
+    shippingRegionId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 1
+    },
     postalCode: {
       type: DataTypes.STRING(100)
     },
@@ -48,12 +53,14 @@ export default (sequelize, DataTypes) => {
     },
     role: {
       allowNull: false,
-      type: DataTypes.ENUM('Customer', 'Admin'),
+      type: DataTypes.ENUM('Customer', 'Admin', 'Super Admin'),
       defaultValue: 'Customer'
     }
   }, {});
-  // User.associate = function(models) {
-  //   // associations can be defined here
-  // };
+  User.associate = (models) => {
+    User.belongsTo(models.ShippingRegion, {
+      foreignKey: 'shippingRegionId',
+    });
+  };
   return User;
 };

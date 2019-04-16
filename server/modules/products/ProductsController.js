@@ -80,6 +80,25 @@ class ProductsController {
     }
   }
 
+  static async getDepartments(req, res) {
+    try {
+      const departments = await models.Department.findAll({
+        attributes: { exclude: ['createdAt', 'updatedAt'] },
+        include: [{
+          model: models.Category,
+          attributes: { exclude: ['createdAt', 'updatedAt'] },
+        }]
+      });
+      return res.status(200).json({
+        success: true,
+        message: 'Departments succesfully retrieved',
+        departments
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
   static async getProductById(req, res) {
     const { id } = req.params;
     try {

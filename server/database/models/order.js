@@ -5,10 +5,6 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL(10, 2),
       defaultValue: 0.00
     },
-    createdOn: {
-      allowNull: false,
-      type: DataTypes.DATE
-    },
     shippedOn: {
       type: DataTypes.DATE
     },
@@ -35,10 +31,36 @@ export default (sequelize, DataTypes) => {
     },
     reference: {
       type: DataTypes.STRING(50)
+    },
+    productId: {
+      allowNull: false,
+      type: DataTypes.INTEGER
+    },
+    sizeId: {
+      allowNull: false,
+      type: DataTypes.INTEGER
+    },
+    colorId: {
+      allowNull: false,
+      type: DataTypes.INTEGER
+    },
+    quantity: {
+      allowNull: false,
+      type: DataTypes.INTEGER
+    },
+    unitCost: {
+      allowNull: false,
+      type: DataTypes.DECIMAL(10, 2)
     }
   }, {});
-  // Order.associate = (models) => {
-  //   // associations can be defined here
-  // };
+  Order.associate = (models) => {
+    const { Product, User } = models;
+    Order.belongsTo(Product, {
+      foreignKey: 'productId',
+    });
+    Order.belongsTo(User, {
+      foreignKey: 'customerId',
+    });
+  };
   return Order;
 };

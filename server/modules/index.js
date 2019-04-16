@@ -1,12 +1,14 @@
 import userRouter from './user';
 import productsRouter from './products';
 import cartRouter from './cart';
+import checkoutRouter from './checkout';
 
 const apiPrefix = '/api';
 const routes = [
   userRouter,
   productsRouter,
-  cartRouter
+  cartRouter,
+  checkoutRouter
 ];
 
 export default (app) => {

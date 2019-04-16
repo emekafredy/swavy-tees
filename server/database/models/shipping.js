@@ -13,8 +13,11 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     }
   }, {});
-  // Shipping.associate = (models) => {
-  //   // associations can be defined here
-  // };
+  Shipping.associate = (models) => {
+    // associations can be defined here
+    Shipping.belongsTo(models.ShippingRegion, {
+      foreignKey: 'shippingRegionId'
+    });
+  };
   return Shipping;
 };

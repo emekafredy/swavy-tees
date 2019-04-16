@@ -5,8 +5,14 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING(100)
     }
   }, {});
-  // ShippingRegion.associate = (models) => {
-  //   // associations can be defined here
-  // };
+  ShippingRegion.associate = (models) => {
+    const { Shipping, User } = models;
+    ShippingRegion.hasMany(Shipping, {
+      foreignKey: 'shippingRegionId',
+    });
+    ShippingRegion.belongsTo(User, {
+      foreignKey: 'shippingRegionId',
+    });
+  };
   return ShippingRegion;
 };
