@@ -14,7 +14,7 @@ class CartInputValidator {
       }
     
       if (!sizeId) {
-        errors.lastName = 'Please enter your preferred size.';
+        errors.sizeId = 'Please enter your preferred size.';
       }
       
       if (!colorId) {
@@ -22,7 +22,7 @@ class CartInputValidator {
       }
 
       errorHandler(res, errors, 400, next);
-    } catch (error) {
+    } catch (error) { /* istanbul ignore next */
       errorResponse(error, 500, res);
     }
   }
@@ -41,13 +41,13 @@ class CartInputValidator {
         }
       });
       if (existingProduct) {
-        return res.status(400).json({
+        return res.status(409).json({
           success: false,
-          message: 'You already have this product in your cart',
+          error: 'You already have this product in your cart',
         });
       }
       return next();
-    } catch (error) {
+    } catch (error) { /* istanbul ignore next */
       errorResponse(error, 500, res);
     }
   }

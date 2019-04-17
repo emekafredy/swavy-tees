@@ -2,7 +2,16 @@ import { Op } from 'sequelize';
 import models from '../../database/models';
 import { errorResponse } from '../../helpers/errorResponse';
 
+/**
+ * @class ProductsController
+ */
 class ProductsController {
+  /**
+   * @description method to call pagination on data that could be much
+   * @static
+   * @param {object} req express request object
+   * @memberof ProductsController
+   */
   static getPagination(req) {
     let { page } = req.query;
     page = page || 1;
@@ -13,6 +22,13 @@ class ProductsController {
     };
   }
 
+  /**
+   * @description query to called on the getProducts method. This helps identify what w call in the params and acts accordingly
+   * @static
+   * @param {string} category string for product categories
+   * @param {object} keyword string for keywords in a product
+   * @memberof ProductsController
+   */
   static getQueryClause(category, keyword) {
     const queryClause = {};
     if (category) {
@@ -36,6 +52,13 @@ class ProductsController {
     return queryClause;
   }
 
+  /**
+   * @description query to get all products and serach for specific results with added query params
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @memberof ProductsController
+   */
   static async getProducts(req, res) {
     const { category, keyword } = req.query;
     try {
@@ -62,11 +85,18 @@ class ProductsController {
         pages,
         count,
       });
-    } catch (error) {
+    } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }
   }
 
+  /**
+   * @description query to get all products categories
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @memberof ProductsController
+   */
   static async getCategories(req, res) {
     try {
       const categories = await models.Category.findAll();
@@ -75,11 +105,18 @@ class ProductsController {
         message: 'Categories succesfully retrieved',
         categories
       });
-    } catch (error) {
-      throw new Error(error);
+    } catch (error) { /* istanbul ignore next */
+      return errorResponse(error, 500, res);
     }
   }
 
+  /**
+   * @description query to get all departments
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @memberof ProductsController
+   */
   static async getDepartments(req, res) {
     try {
       const departments = await models.Department.findAll({
@@ -94,11 +131,18 @@ class ProductsController {
         message: 'Departments succesfully retrieved',
         departments
       });
-    } catch (error) {
-      throw new Error(error);
+    } catch (error) { /* istanbul ignore next */
+      return errorResponse(error, 500, res);
     }
   }
 
+  /**
+   * @description query to get a product by its id
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @memberof ProductsController
+   */
   static async getProductById(req, res) {
     const { id } = req.params;
     try {
@@ -127,7 +171,7 @@ class ProductsController {
         message: 'Product succesfully retrieved',
         product
       });
-    } catch (error) {
+    } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }
   }

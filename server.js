@@ -9,7 +9,7 @@ require('dotenv').config();
 
 const app = express();
 
-const PORT = process.env.PORT || 4000;
+const port = process.env.PORT || 4000;
 
 app.engine('.hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }));
 app.set('view engine', '.hbs');
@@ -21,6 +21,6 @@ app.use(express.static(`${__dirname}/public`));
 modules(app);
 app.use(notFound);
 
-app.listen(PORT, () => {
-  log.info(`🚀 App server is running on http://localhost:${PORT} 🚀`);
-});
+export const server = app.listen(port, () => log.info(`🚀 App server is running on http://localhost:${port} 🚀`));
+
+export default app;

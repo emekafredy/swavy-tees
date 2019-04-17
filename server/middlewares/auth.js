@@ -11,17 +11,14 @@ class AuthMiddleware {
       const token = authorization.split(' ')[1];
       return jwt.verify(token, key, (err, decoded) => {
         if (err) {
-          return res.status(401).json({ message: 'Your Token is invalid' });
+          return res.status(401).json({ success: false, message: 'Your Token is invalid' });
         }
         req.user = decoded.id;
         req.role = decoded.role;
         return next();
       });
     }
-    return res.status(401).json({
-      success: false,
-      message: 'Please Login or Signup to gain access',
-    });
+    return res.status(401).json({ success: false, message: 'Please Login or Signup to gain access' });
   }
 
   static authorizeAdmin(req, res, next) {

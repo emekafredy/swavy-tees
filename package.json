@@ -4,6 +4,7 @@
   "description": "An e-commerce app, dealing primarily on t-shirt sales",
   "main": "server.js",
   "scripts": {
+    "pretest": "yarn undo:migrations && yarn migrations",
     "test": "jest --no-cache  --detectOpenHandles --runInBand --forceExit",
     "dev": "nodemon --exec babel-node server.js",
     "migrations": "sequelize db:migrate",
@@ -50,6 +51,7 @@
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.16.0",
     "jest": "^24.7.1",
+    "sequelize-cli": "^5.4.0",
     "supertest": "^4.0.2"
   }
 }

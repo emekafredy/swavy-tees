@@ -7,7 +7,6 @@ services:
 
 before_script:
   - yarn install
-  - sleep 15
   - mysql -e 'CREATE DATABASE swavy_tees_test;'
 
 script:
