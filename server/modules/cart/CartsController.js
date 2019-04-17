@@ -1,7 +1,17 @@
 import models from '../../database/models';
 import { errorResponse } from '../../helpers/errorResponse';
 
+/**
+ * @class CartsController
+ */
 class CartsController {
+  /**
+   * @description query to add products to a logged in user's cart
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @memberof CartsController
+   */
   static async addProductToCart(req, res) {
     const userId = req.user;
     const { productId } = req.params;
@@ -46,11 +56,18 @@ class CartsController {
         message: 'Product successfully added to cart',
         addedToCart
       });
-    } catch (error) {
+    } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }
   }
 
+  /**
+ * @description query to get all products in the cart
+ * @static
+ * @param {object} req express request object
+ * @param {object} res express response object
+ * @memberof CartsController
+ */
   static async getShoppingCart(req, res) {
     const userId = req.user;
     try {
@@ -109,11 +126,18 @@ class CartsController {
       }
       const message = 'No product found in your cart';
       return errorResponse(message, 200, res);
-    } catch (error) {
+    } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }
   }
 
+  /**
+   * @description query to remove products from a logged in user's cart
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @memberof CartsController
+   */
   static async removeProductFromCart(req, res) {
     const userId = req.user;
     const { cartId } = req.params;
@@ -131,11 +155,18 @@ class CartsController {
         success: true,
         message: 'Product successfully removed from cart',
       });
-    } catch (error) {
+    } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }
   }
 
+  /**
+   * @description query to update a product's quantity in a logged in user's cart
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @memberof CartsController
+   */
   static async updateProductQuantity(req, res) {
     const userId = req.user;
     const { cartId } = req.params;
@@ -156,11 +187,18 @@ class CartsController {
         message: 'Product quantity successfully updated',
         updatedCart
       });
-    } catch (error) {
+    } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }
   }
 
+  /**
+   * @description query to clearb all  products in a logged in user's cart
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @memberof CartsController
+   */
   static async clearCart(req, res) {
     const userId = req.user;
     try {
@@ -176,7 +214,7 @@ class CartsController {
         success: true,
         message: 'Cart successfully cleared',
       });
-    } catch (error) {
+    } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }
   }
