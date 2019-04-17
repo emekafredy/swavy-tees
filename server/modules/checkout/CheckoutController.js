@@ -6,11 +6,28 @@ import { errorResponse } from '../../helpers/errorResponse';
 const stripeKey = stripe(process.env.STRIPE_SECRET_KEY);
 const publishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
 
+/**
+ * @class CheckoutController
+ */
 class CheckoutController {
+  /**
+   * @description query to get to the payment routes
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @memberof CheckoutController
+   */
   static getCheckout(req, res) {
     res.render('index', { publishableKey });
   }
 
+  /**
+   * @description query to create customer on stripe and save orders in the orders table
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @memberof CheckoutController
+   */
   static async checkout(req, res, purchasePrice, userId, shippingId, stripeEmail, stripeToken) {
     try {
       const customer = await stripeKey.customers.create({
@@ -68,11 +85,18 @@ class CheckoutController {
         }
         return errorResponse('Payment not successful', 500, res);
       }
-    } catch (error) {
+    } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }
   }
 
+  /**
+   * @description query to make the payment on stripe and save orders in the orders table
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @memberof CheckoutController
+   */
   static async makePayment(req, res) {
     const { stripeEmail, stripeToken, shippingId } = req.body;
     const userId = req.user;
@@ -106,11 +130,18 @@ class CheckoutController {
       const purchasePrice = Math.round((totalPrice + costForShipping) * 100);
 
       return CheckoutController.checkout(req, res, purchasePrice, userId, shippingExists.id, stripeEmail, stripeToken);
-    } catch (error) {
+    } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }
   }
 
+  /**
+   * @description query to get all orders for a logged in user
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @memberof CheckoutController
+   */
   static async getOrders(req, res) {
     const userId = req.user;
     try {
@@ -159,11 +190,18 @@ class CheckoutController {
       }
       const message = 'No order found';
       return errorResponse(message, 200, res);
-    } catch (error) {
+    } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }
   }
 
+  /**
+   * @description query to get all shipping regions
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @memberof CheckoutController
+   */
   static async getShippingRegions(req, res) {
     try {
       const regions = await models.ShippingRegion.findAll({
@@ -178,7 +216,7 @@ class CheckoutController {
         message: 'Regions succesfully retrieved',
         regions
       });
-    } catch (error) {
+    } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }
   }

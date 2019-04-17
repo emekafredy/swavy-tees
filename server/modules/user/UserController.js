@@ -4,7 +4,17 @@ import { generateToken } from '../../helpers/generateToken';
 import { trimData } from '../../helpers/trimData';
 import { errorResponse } from '../../helpers/errorResponse';
 
+/**
+ * @class UserController
+ */
 class UserController {
+  /**
+   * @description query to register a new user unto the platform
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @memberof UserController
+   */
   static async registerUser(req, res) {
     const {
       firstName, lastName, email, password
@@ -24,11 +34,18 @@ class UserController {
         message: 'Successful user registeration',
         token
       });
-    } catch (error) {
+    } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }
   }
 
+  /**
+   * @description query to login already registered users
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @memberof UserController
+   */
   static async userLogin(req, res) {
     const { email, password } = req.body;
     try {
@@ -50,24 +67,18 @@ class UserController {
         message: 'Successful Login',
         token
       });
-    } catch (error) {
+    } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }
   }
 
-  static async getUsers(req, res) {
-    try {
-      const users = await models.User.findAll();
-      return res.status(200).json({
-        success: true,
-        message: 'Users succesfully retrieved',
-        users
-      });
-    } catch (error) {
-      return errorResponse(error, 500, res);
-    }
-  }
-
+  /**
+   * @description query to get an authenticated user's profile
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @memberof UserController
+   */
   static async getUser(req, res) {
     const userId = req.user;
     try {
@@ -75,8 +86,9 @@ class UserController {
         where: { id: userId },
         attributes: { exclude: ['password'] }
       });
-      if (!user) {
+      if (!user) { /* istanbul ignore next */
         const error = 'User does not exist';
+        /* istanbul ignore next */
         return errorResponse(error, 404, res);
       }
       return res.status(200).json({
@@ -84,11 +96,18 @@ class UserController {
         message: 'User\'s profile succesfully retrieved',
         user
       });
-    } catch (error) {
+    } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }
   }
 
+  /**
+   * @description query to update an authenticated user's profile
+   * @static
+   * @param {object} req express request object
+   * @param {object} res express response object
+   * @memberof UserController
+   */
   static async updateProfile(req, res) {
     const userId = req.user;
     const {
@@ -99,8 +118,9 @@ class UserController {
         where: { id: userId },
         attributes: { exclude: ['password'] }
       });
-      if (!user) {
+      if (!user) { /* istanbul ignore next */
         const error = 'User does not exist';
+        /* istanbul ignore next */
         return errorResponse(error, 404, res);
       }
       const userUpdateData = {
@@ -123,7 +143,7 @@ class UserController {
         message: 'User profile succesfully updated',
         updatedUser
       });
-    } catch (error) {
+    } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }
   }

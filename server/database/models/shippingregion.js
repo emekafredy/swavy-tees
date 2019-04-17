@@ -6,11 +6,8 @@ export default (sequelize, DataTypes) => {
     }
   }, {});
   ShippingRegion.associate = (models) => {
-    const { Shipping, User } = models;
+    const { Shipping } = models;
     ShippingRegion.hasMany(Shipping, {
-      foreignKey: 'shippingRegionId',
-    });
-    ShippingRegion.belongsTo(User, {
       foreignKey: 'shippingRegionId',
     });
   };

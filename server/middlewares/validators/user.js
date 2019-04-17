@@ -44,7 +44,7 @@ class UserProfileValidator {
       }
 
       errorHandler(res, errors, 400, next);
-    } catch (error) {
+    } catch (error) { /* istanbul ignore next */
       throw new Error('Server error');
     }
   }
@@ -79,12 +79,12 @@ class UserProfileValidator {
         errors.lastName = 'Your last name must be between 3 and 200 characters.';
       }
 
-      if (address1 && !validator.isLength(address1, { min: 3, max: 200 })) {
-        errors.address1 = 'Your address should have between 10 and 300 characters.';
+      if (address1 && !validator.isLength(address1, { min: 6, max: 200 })) {
+        errors.address1 = 'Your address should have between 6 and 200 characters.';
       }
 
-      if (address2 && !validator.isLength(address2, { min: 3, max: 200 })) {
-        errors.address2 = 'Your address should have between 10 and 300 characters.';
+      if (address2 && !validator.isLength(address2, { min: 6, max: 200 })) {
+        errors.address2 = 'Your address should have between 6 and 200 characters.';
       }
 
       if (city && !validator.isLength(city, { min: 3, max: 200 })) {
@@ -114,7 +114,7 @@ class UserProfileValidator {
       }
 
       errorHandler(res, errors, 400, next);
-    } catch (error) {
+    } catch (error) { /* istanbul ignore next */
       throw new Error('Server error');
     }
   }

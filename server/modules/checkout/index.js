@@ -26,7 +26,6 @@ Router.get(
 
 Router.get(
   '/regions',
-  authorizeUser,
   CheckoutController.getShippingRegions
 );
 export default Router;
