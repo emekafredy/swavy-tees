@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app, { server } from '../../../../server';
+import app, { server } from '../../../..';
 import models from '../../../database/models';
 // import { generateToken } from '../../../helpers/generateToken';
 
@@ -28,7 +28,7 @@ describe('User Profile', () => {
     // eslint-disable-next-line prefer-destructuring
     token = user.body.token;
   });
-  afterAll(async () => { 
+  afterAll(async () => {
     await server.close();
     await models.User.destroy({ force: true, truncate: { cascade: true } });
   });

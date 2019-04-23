@@ -2,14 +2,16 @@ export const newUser = {
   firstName: 'Emeka',
   lastName: 'Sammy',
   email: 'em@mail.com',
-  password: '123456'
+  password: '123456',
+  confirmPassword: '123456'
 };
 
 export const newUser2 = {
   firstName: 'Maria',
   lastName: 'Festus',
   email: 'em@mailll.com',
-  password: '123456'
+  password: '123456',
+  confirmPassword: '123456'
 };
 
 export const missingValues = {

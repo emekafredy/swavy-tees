@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app, { server } from '../../../../server';
+import app, { server } from '../../../..';
 import models from '../../../database/models';
 
 import {
@@ -45,8 +45,6 @@ describe('User Authentication', () => {
         .set('Content-Type', 'application/json')
         .send(newUser)
         .end((err, res) => {
-          console.log('REG RESPONSEE>>>>>>>>>>>>>>>>>', res.body);
-          console.log('REG ERROR>>>>>>>>>>>>>>>>>', err);
           expect(res.body.success).toEqual(true);
           expect(res.body.message).toEqual('Successful user registeration');
           if (err) return done(err);
@@ -60,8 +58,6 @@ describe('User Authentication', () => {
         .set('Content-Type', 'application/json')
         .send(missingValues)
         .end((err, res) => {
-          console.log('LOGIN RESPONSEE>>>>>>>>>>>>>>>>>', res.body);
-          console.log('LOGIN ERROR>>>>>>>>>>>>>>>>>', err);
           const { errors, success } = res.body;
           expect(success).toEqual(false);
           expect(errors.firstName).toEqual('First name is required.');
@@ -165,7 +161,6 @@ describe('User Authentication', () => {
           const { errors, success } = res.body;
           expect(success).toEqual(false);
           expect(errors.email).toEqual('Email address is required.');
-          expect(errors.password).toEqual('Password is required.');
           if (err) return done(err);
           done();
         });

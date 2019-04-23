@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app, { server } from '../../../../server';
+import app, { server } from '../../../..';
 import models from '../../../database/models';
 
 import { newUser, newUser2 } from '../../user/__tests__/userData/userData';
@@ -42,7 +42,7 @@ describe('Carts', () => {
     // eslint-disable-next-line prefer-destructuring
     token2 = user2.body.token;
   });
-  afterAll(async () => { 
+  afterAll(async () => {
     await server.close();
     await models.User.destroy({ force: true, truncate: { cascade: true } });
     await models.Department.destroy({ force: true, truncate: { cascade: true } });
@@ -132,25 +132,6 @@ describe('Carts', () => {
         });
     });
   
-    it('should throw an error if quantity is not entered', (done) => {
-      request(app)
-        .post('/api/shopping-cart/1')
-        .set('Content-Type', 'application/json')
-        .set('authorization', `Bearer ${token}`)
-        .send({
-          quantity: '',
-          colorId: 2,
-          sizeId: 1
-        })
-        .end((err, res) => {
-          const { success, errors } = res.body;
-          expect(success).toEqual(false);
-          expect(errors.quantity).toEqual('Product quantity is required.');
-          if (err) return done(err);
-          done();
-        });
-    });
-  
     it('should throw an error if product color is not entered', (done) => {
       request(app)
         .post('/api/shopping-cart/1')
@@ -200,9 +181,9 @@ describe('Carts', () => {
           sizeId: 1
         })
         .end((err, res) => {
-          const { success, error } = res.body;
+          const { success, errors } = res.body;
           expect(success).toEqual(false);
-          expect(error).toEqual('You already have this product in your cart');
+          expect(errors.product).toEqual('You already have this product in your cart');
           if (err) return done(err);
           done();
         });

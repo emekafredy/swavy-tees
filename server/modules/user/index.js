@@ -1,20 +1,18 @@
 import express from 'express';
 import UserController from './UserController';
-import UserProfileValidator from '../../middlewares/validators/user';
 import AuthMiddleware from '../../middlewares/auth';
+// import { redisMiddleware } from '../../middlewares/cache';
 
 const Router = express.Router();
 const { authorizeUser } = AuthMiddleware;
 
 Router.post(
   '/users/register',
-  UserProfileValidator.validateSignUp,
   UserController.registerUser
 );
 
 Router.post(
   '/users/login',
-  UserProfileValidator.validateLogin,
   UserController.userLogin
 );
 
@@ -27,7 +25,6 @@ Router.get(
 Router.put(
   '/user',
   authorizeUser,
-  UserProfileValidator.validateProfileUpdate,
   UserController.updateProfile
 );
 

@@ -1,13 +1,13 @@
 import validator from 'validator';
-import errorHandler from '../../helpers/errorHandler';
-import models from '../../database/models';
+import { isEmpty } from 'lodash';
+import models from '../database/models';
 
 class UserProfileValidator {
-  static async validateSignUp(req, res, next) {
+  static async validateSignUp(req) {
     try {
       const errors = {};
       const {
-        firstName, lastName, email, password
+        firstName, lastName, email, password, confirmPassword
       } = req.body;
   
       if (!firstName || validator.isEmpty(firstName)) {
@@ -34,6 +34,12 @@ class UserProfileValidator {
         errors.password = 'Your password must be between 6 and 20 characters.';
       }
 
+      if (!confirmPassword || validator.isEmpty(confirmPassword)) {
+        errors.confirmPassword = 'Please confirm your password.';
+      } else if (confirmPassword !== password) {
+        errors.confirmPassword = 'Passwords do not match.';
+      }
+
       const registeredEmail = await models.User.findOne({
         where: { email },
         attributes: ['email']
@@ -43,13 +49,13 @@ class UserProfileValidator {
         errors.email = 'Email already exists.';
       }
 
-      errorHandler(res, errors, 400, next);
+      if (!isEmpty(errors)) return errors;
     } catch (error) { /* istanbul ignore next */
       throw new Error('Server error');
     }
   }
 
-  static async validateLogin(req, res, next) {
+  static async validateLogin(req) {
     const errors = {};
     const { email, password } = req.body;
 
@@ -60,11 +66,17 @@ class UserProfileValidator {
     if (!password || validator.isEmpty(password)) {
       errors.password = 'Password is required.';
     }
+    const user = await models.User.findOne({
+      where: { email }
+    });
 
-    errorHandler(res, errors, 400, next);
+    if (!user) {
+      errors.password = 'Email or password is incorrect.';
+    }
+    if (!isEmpty(errors)) return errors;
   }
 
-  static async validateProfileUpdate(req, res, next) {
+  static async validateProfileUpdate(req) {
     try {
       const errors = {};
       const {
@@ -113,7 +125,7 @@ class UserProfileValidator {
         errors.mobilePhone = 'Please enter a valid phone number';
       }
 
-      errorHandler(res, errors, 400, next);
+      if (!isEmpty(errors)) return errors;
     } catch (error) { /* istanbul ignore next */
       throw new Error('Server error');
     }

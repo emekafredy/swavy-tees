@@ -1,5 +1,7 @@
 import models from '../../database/models';
 import { errorResponse } from '../../helpers/errorResponse';
+import CartInputValidator from '../../validators/cart';
+import errorHandler from '../../helpers/errorHandler';
 
 /**
  * @class CartsController
@@ -16,10 +18,13 @@ class CartsController {
     const userId = req.user;
     const { productId } = req.params;
     const {
-      quantity, sizeId, colorId
+      sizeId, colorId
     } = req.body;
 
     try {
+      const errors = await CartInputValidator.validateAddProductToCart(req, res);
+      if (errors) return errorHandler(res, errors, 400);
+
       const product = await models.Product.findOne({
         where: { id: productId },
         include: [{
@@ -47,7 +52,7 @@ class CartsController {
         return errorResponse(error, 404, res);
       }
       const addedProduct = {
-        productId, quantity, sizeId, colorId, customerId: userId,
+        productId, quantity: 1, sizeId, colorId, customerId: userId,
       };
 
       const addedToCart = await models.ShoppingCart.create(addedProduct);
@@ -101,7 +106,9 @@ class CartsController {
           productsQuantity += product.quantity;
 
           return {
+            id: product.id,
             user: product.customerId,
+            discount: salesDiscount,
             quantity: product.quantity,
             color: individualColors[0].color,
             size: individualSizes[0].size,
@@ -154,6 +161,7 @@ class CartsController {
       return res.status(200).json({
         success: true,
         message: 'Product successfully removed from cart',
+        deletedProduct: cartProduct
       });
     } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);

@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
 
-const errorHandler = (res, errors, statusCode, next) => {
+const errorHandler = (res, errors, statusCode) => {
   if (!isEmpty(errors)) {
     return res.status(statusCode).json({
       success: false,
@@ -8,7 +8,6 @@ const errorHandler = (res, errors, statusCode, next) => {
       errors
     });
   }
-  return next();
 };
 
 export default errorHandler;

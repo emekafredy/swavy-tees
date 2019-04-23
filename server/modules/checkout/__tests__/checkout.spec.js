@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app, { server } from '../../../../server';
+import app, { server } from '../../../..';
 import models from '../../../database/models';
 
 import { newUser, newUser2 } from '../../user/__tests__/userData/userData';
@@ -49,7 +49,7 @@ describe('Checkout', () => {
     // eslint-disable-next-line prefer-destructuring
     token2 = user2.body.token;
   });
-  afterAll(async () => { 
+  afterAll(async () => {
     await server.close();
     await models.User.destroy({ force: true, truncate: { cascade: true } });
     await models.Department.destroy({ force: true, truncate: { cascade: true } });
@@ -72,8 +72,6 @@ describe('Checkout', () => {
         .set('Content-Type', 'application/json')
         .set('authorization', `Bearer ${token}`)
         .end((err, res) => {
-          console.log('RESPONSE>>>>>>>>>>>>>>>', res.body);
-          console.log('ERRRORR>>>>>>>>>>>>>>>', err);
           const { success, message, order } = res.body;
           expect(success).toEqual(true);
           expect(message).toEqual('orders succesfully retrieved');

@@ -15,7 +15,7 @@ class ProductsController {
   static getPagination(req) {
     let { page } = req.query;
     page = page || 1;
-    const limit = 5;
+    const limit = 6;
     const offset = limit * (page - 1);
     return {
       page, limit, offset,
@@ -84,6 +84,8 @@ class ProductsController {
         currentPage: page,
         pages,
         count,
+        categoryName: category ? rows[0].categories[0].name : '',
+        categoryDescription: category ? rows[0].categories[0].description : ''
       });
     } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);

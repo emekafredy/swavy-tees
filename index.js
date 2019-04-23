@@ -2,6 +2,7 @@ import express from 'express';
 import log from 'fancy-log';
 import bodyParser from 'body-parser';
 import exphbs from 'express-handlebars';
+import cors from 'cors';
 import modules from './server/modules';
 import notFound from './server/modules/notFound';
 
@@ -14,6 +15,7 @@ const port = process.env.PORT || 4000;
 app.engine('.hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }));
 app.set('view engine', '.hbs');
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(`${__dirname}/public`));

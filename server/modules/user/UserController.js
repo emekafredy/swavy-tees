@@ -3,6 +3,8 @@ import models from '../../database/models';
 import { generateToken } from '../../helpers/generateToken';
 import { trimData } from '../../helpers/trimData';
 import { errorResponse } from '../../helpers/errorResponse';
+import UserProfileValidator from '../../validators/user';
+import errorHandler from '../../helpers/errorHandler';
 
 /**
  * @class UserController
@@ -26,13 +28,17 @@ class UserController {
     };
 
     try {
+      const errors = await UserProfileValidator.validateSignUp(req);
+      if (errors) return errorHandler(res, errors, 400);
+
       await trimData(newUser);
       const user = await models.User.create(newUser);
       const token = await generateToken(user);
       return res.status(201).json({
         success: true,
         message: 'Successful user registeration',
-        token
+        token,
+        userFirstName: newUser.firstName,
       });
     } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
@@ -49,15 +55,21 @@ class UserController {
   static async userLogin(req, res) {
     const { email, password } = req.body;
     try {
+      const errors = await UserProfileValidator.validateLogin(req);
+      if (errors) return errorHandler(res, errors, 400);
+
       const user = await models.User.findOne({
         where: { email }
       });
   
       const validPassword = await compare(password, user.password);
-      if (!user || !validPassword) {
+      if (!validPassword) {
         return res.status(400).json({
           success: false,
-          message: 'Email or password is incorrect',
+          message: 'Request failed',
+          errors: {
+            email: 'Email or password is incorrect.'
+          }
         });
       }
   
@@ -65,7 +77,8 @@ class UserController {
       return res.status(200).json({
         success: true,
         message: 'Successful Login',
-        token
+        token,
+        userFirstName: user.firstName,
       });
     } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
@@ -123,6 +136,10 @@ class UserController {
         /* istanbul ignore next */
         return errorResponse(error, 404, res);
       }
+      
+      const errors = await UserProfileValidator.validateProfileUpdate(req);
+      if (errors) return errorHandler(res, errors, 400);
+
       const userUpdateData = {
         firstName: firstName || (user.firstName || ''),
         lastName: lastName || (user.lastName || ''),

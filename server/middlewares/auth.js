@@ -20,14 +20,6 @@ class AuthMiddleware {
     }
     return res.status(401).json({ success: false, message: 'Please Login or Signup to gain access' });
   }
-
-  static authorizeAdmin(req, res, next) {
-    if (req.role === 'Admin') next();
-    return res.status(403).json({
-      success: false,
-      message: 'User not an Admin',
-    });
-  }
 }
 
 export default AuthMiddleware;

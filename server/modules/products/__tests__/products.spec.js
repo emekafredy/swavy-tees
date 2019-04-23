@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app, { server } from '../../../../server';
+import app, { server } from '../../../..';
 import models from '../../../database/models';
 
 import {
@@ -20,7 +20,7 @@ describe('Products Endpoint', () => {
     await models.Product.bulkCreate(productsData);
     await models.ProductCategory.bulkCreate(productCategories);
   });
-  afterAll(async () => { 
+  afterAll(async () => {
     await server.close();
     await models.Department.destroy({ force: true, truncate: { cascade: true } });
     await models.Category.destroy({ force: true, truncate: { cascade: true } });
