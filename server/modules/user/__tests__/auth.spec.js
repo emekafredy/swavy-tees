@@ -27,6 +27,26 @@ describe('User Authentication', () => {
   });
 
   describe('user signup', () => {
+    it('should render a message for the url', (done) => {
+      request(app)
+        .get('/')
+        .set('Content-Type', 'application/json')
+        .end((err, res) => {
+          expect(res.body.message).toEqual('SWAVY-TEES API');
+          if (err) return done(err);
+          done();
+        });
+    });
+    it('should render the welcome message successfully', (done) => {
+      request(app)
+        .get('/api')
+        .set('Content-Type', 'application/json')
+        .end((err, res) => {
+          expect(res.body.message).toEqual('Welcome to Swavy-Tees App API, Version 1');
+          if (err) return done(err);
+          done();
+        });
+    });
     it('should return an error message if the user enters a wrong route', (done) => {
       request(app)
         .post('/api/users/riiouoiiper')
