@@ -18,7 +18,7 @@ class CartsController {
     const userId = req.user;
     const { productId } = req.params;
     const {
-      sizeId, colorId
+      sizeId, colorId, quantity
     } = req.body;
 
     try {
@@ -52,15 +52,11 @@ class CartsController {
         return errorResponse(error, 404, res);
       }
       const addedProduct = {
-        productId, quantity: 1, sizeId, colorId, customerId: userId,
+        productId, quantity, sizeId, colorId, customerId: userId,
       };
 
-      const addedToCart = await models.ShoppingCart.create(addedProduct);
-      return res.status(201).json({
-        success: true,
-        message: 'Product successfully added to cart',
-        addedToCart
-      });
+      await models.ShoppingCart.create(addedProduct);
+      return CartsController.getShoppingCart(req, res);
     } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }
@@ -150,7 +146,7 @@ class CartsController {
     const { cartId } = req.params;
     try {
       const cartProduct = await models.ShoppingCart.findOne({
-        where: { id: cartId, customerId: userId }
+        where: { id: cartId, customerId: userId },
       });
 
       if (!cartProduct) {
@@ -179,9 +175,10 @@ class CartsController {
     const userId = req.user;
     const { cartId } = req.params;
     const { quantity } = req.body;
+    
     try {
       const cartProduct = await models.ShoppingCart.findOne({
-        where: { id: cartId, customerId: userId }
+        where: { id: cartId, customerId: userId },
       });
 
       if (!cartProduct) {
@@ -189,12 +186,8 @@ class CartsController {
         return errorResponse(error, 404, res);
       }
       const newQuantity = { quantity: quantity || cartProduct.quantity };
-      const updatedCart = await cartProduct.update(newQuantity);
-      return res.status(200).json({
-        success: true,
-        message: 'Product quantity successfully updated',
-        updatedCart
-      });
+      await cartProduct.update(newQuantity);
+      return CartsController.getShoppingCart(req, res);
     } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }

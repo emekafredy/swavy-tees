@@ -15,7 +15,7 @@ class ProductsController {
   static getPagination(req) {
     let { page } = req.query;
     page = page || 1;
-    const limit = 6;
+    const limit = 20;
     const offset = limit * (page - 1);
     return {
       page, limit, offset,

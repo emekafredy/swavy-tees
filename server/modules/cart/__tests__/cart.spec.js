@@ -69,7 +69,7 @@ describe('Carts', () => {
         .end((err, res) => {
           const { success, message } = res.body;
           expect(success).toEqual(true);
-          expect(message).toEqual('Product successfully added to cart');
+          expect(message).toEqual('cart succesfully retrieved');
           if (err) return done(err);
           done();
         });
@@ -88,7 +88,7 @@ describe('Carts', () => {
         .end((err, res) => {
           const { success, message } = res.body;
           expect(success).toEqual(true);
-          expect(message).toEqual('Product successfully added to cart');
+          expect(message).toEqual('cart succesfully retrieved');
           if (err) return done(err);
           done();
         });
@@ -228,10 +228,11 @@ describe('Carts', () => {
         .set('authorization', `Bearer ${token}`)
         .send({ quantity: 4 })
         .end((err, res) => {
-          const { success, message, updatedCart } = res.body;
+          const { success, message, cart } = res.body;
+          console.log('res>>>>>>>>>>>>>>>>>>>>>>', res.body);
           expect(success).toEqual(true);
-          expect(message).toEqual('Product quantity successfully updated');
-          expect(updatedCart.quantity).toEqual(4);
+          expect(message).toEqual('cart succesfully retrieved');
+          expect(cart[0].quantity).toEqual(4);
           if (err) return done(err);
           done();
         });

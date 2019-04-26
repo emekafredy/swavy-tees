@@ -165,6 +165,7 @@ class CheckoutController {
           }));
 
           return {
+            id: product.id,
             user: product.customerId,
             quantity: product.quantity,
             totalAmount: product.totalAmount,

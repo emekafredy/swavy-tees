@@ -6,7 +6,7 @@
   "scripts": {
     "pretest": "yarn undo:migrations && yarn migrations",
     "test": "jest --no-cache  --detectOpenHandles --runInBand --forceExit",
-    "dev": "nodemon --exec babel-node /",
+    "dev": "nodemon --exec babel-node ./",
     "migrations": "sequelize db:migrate",
     "undo:migrations": "sequelize db:migrate:undo:all",
     "seed": "sequelize db:seed:all",
@@ -30,6 +30,7 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.11",
     "mysql2": "^1.6.5",
+    "nodemailer": "^6.1.1",
     "redis": "^2.8.0",
     "redis-jsonify": "^1.2.0",
     "sequelize": "^5.2.9",
