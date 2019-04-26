@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "An e-commerce app, dealing primarily on t-shirt sales",
   "main": "server.js",
+  "engines": {
+    "node": "10.8.0"
+  },
   "scripts": {
     "pretest": "yarn undo:migrations && yarn migrations",
     "test": "jest --no-cache  --detectOpenHandles --runInBand --forceExit",
