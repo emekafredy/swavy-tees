@@ -1,7 +1,6 @@
 import express from 'express';
 import UserController from './UserController';
 import AuthMiddleware from '../../middlewares/auth';
-// import { redisMiddleware } from '../../middlewares/cache';
 
 const Router = express.Router();
 const { authorizeUser } = AuthMiddleware;
