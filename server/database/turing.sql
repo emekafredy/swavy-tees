@@ -1,7 +1,4 @@
 -- Create tshirtshop tables
-DROP DATABASE swavy_tees;
-CREATE DATABASE swavy_tees;
-USE swavy_tees;
 
 -- Create department table
 CREATE TABLE `department` (
