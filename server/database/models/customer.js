@@ -1,10 +1,12 @@
 export default (sequelize, DataTypes) => {
-  const User = sequelize.define('User', {
-    firstName: {
+  const Customer = sequelize.define('Customer', {
+    customer_id: {
       allowNull: false,
-      type: DataTypes.STRING(50)
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
     },
-    lastName: {
+    name: {
       allowNull: false,
       type: DataTypes.STRING(50)
     },
@@ -16,13 +18,13 @@ export default (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.STRING(100)
     },
-    creditCard: {
+    credit_card: {
       type: DataTypes.STRING
     },
-    address1: {
+    address_1: {
       type: DataTypes.STRING(100)
     },
-    address2: {
+    address_2: {
       type: DataTypes.STRING(100)
     },
     city: {
@@ -31,24 +33,24 @@ export default (sequelize, DataTypes) => {
     region: {
       type: DataTypes.STRING(100)
     },
-    shippingRegionId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 1
-    },
-    postalCode: {
+    postal_code: {
       type: DataTypes.STRING(100)
     },
     country: {
       type: DataTypes.STRING(100)
     },
-    dayPhone: {
+    shipping_region_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 1
+    },
+    day_phone: {
       type: DataTypes.STRING(100)
     },
-    eveningPhone: {
+    evening_phone: {
       type: DataTypes.STRING(100)
     },
-    mobilePhone: {
+    mobile_phone: {
       type: DataTypes.STRING(100)
     },
     role: {
@@ -56,11 +58,15 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.ENUM('Customer', 'Admin', 'Super Admin'),
       defaultValue: 'Customer'
     }
-  }, {});
-  User.associate = (models) => {
-    User.belongsTo(models.ShippingRegion, {
-      foreignKey: 'shippingRegionId',
+  }, {
+    tableName: 'customer',
+    timestamps: false,
+  });
+  Customer.associate = (models) => {
+    const { ShippingRegion } = models;
+    Customer.belongsTo(ShippingRegion, {
+      foreignKey: 'shipping_region_id',
     });
   };
-  return User;
+  return Customer;
 };

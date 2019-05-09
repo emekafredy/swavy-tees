@@ -1,16 +1,18 @@
 export default (sequelize, DataTypes) => {
   const ProductCategory = sequelize.define('ProductCategory', {
-    productId: {
+    product_id: {
       allowNull: false,
+      primaryKey: true,
       type: DataTypes.INTEGER
     },
-    categoryId: {
+    category_id: {
       allowNull: false,
+      primaryKey: true,
       type: DataTypes.INTEGER
     }
-  }, {});
-  // ProductCategory.associate = (models) => {
-  //   // associations can be defined here
-  // };
+  }, {
+    tableName: 'product_category',
+    timestamps: false,
+  });
   return ProductCategory;
 };

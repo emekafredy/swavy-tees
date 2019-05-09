@@ -1,52 +1,44 @@
 export const ordersData = [
   {
-    id: 1,
-    totalAmount: 113.94,
+    order_id: 1,
+    total_amount: 113.94,
+    created_on: new Date(),
+    status: 'Ordered',
     comments: 'payments for order',
-    authCode: 'uyp4opo4[poi[3ouu',
-    customerId: 5,
-    shippingId: 1,
+    auth_code: 'uyp4opo4[poi[3ouu',
+    customer_id: 5,
+    shipping_id: 1,
     reference: 'jgiroylk;klll',
-    productId: 1,
-    colorId: 1,
-    sizeId: 1,
+    product_id: 1,
+    attributes: 'Red,XL',
     quantity: 6,
-    unitCost: 18.99,
-    createdAt: '2019-04-09 20:51:53',
-    updatedAt: '2019-04-09 20:51:53',
+    product_name: 'Good product',
+    unit_cost: 18.99,
   }
 ];
 
 export const shippingData = [
   {
-    id: 1,
-    shippingCost: 20.00,
-    shippingType: 'Next Day Delivery ($20)',
-    shippingRegionId: 2,
-    createdAt: '2019-04-09 20:51:53',
-    updatedAt: '2019-04-09 20:51:53',
+    shipping_id: 1,
+    shipping_cost: 20.00,
+    shipping_type: 'Next Day Delivery ($20)',
+    shipping_region_id: 2,
   },
   {
-    id: 2,
-    shippingCost: 10.00,
-    shippingType: '3-4 Days ($10)',
-    shippingRegionId: 2,
-    createdAt: '2019-04-09 20:51:53',
-    updatedAt: '2019-04-09 20:51:53',
+    shipping_id: 2,
+    shipping_cost: 10.00,
+    shipping_type: '3-4 Days ($10)',
+    shipping_region_id: 2,
   },
 ];
 
 export const shippingRegionData = [
   {
-    id: 1,
-    shippingRegion: 'Please Select',
-    createdAt: '2019-04-09 20:51:53',
-    updatedAt: '2019-04-09 20:51:53',
+    shipping_region_id: 1,
+    shipping_region: 'Please Select',
   },
   {
-    id: 2,
-    shippingRegion: 'US / Canada',
-    createdAt: '2019-04-09 20:51:53',
-    updatedAt: '2019-04-09 20:51:53',
+    shipping_region_id: 2,
+    shipping_region: 'US / Canada',
   },
 ];

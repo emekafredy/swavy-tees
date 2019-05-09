@@ -1,19 +1,17 @@
 import request from 'supertest';
 import app, { server } from '../../../..';
 import models from '../../../database/models';
-// import { generateToken } from '../../../helpers/generateToken';
 
 import {
   newUser,
   validUpdate,
   shortAddress,
   shortCountryName,
-  shortFirstName,
+  shortUserName,
   shortPhoneNumber,
   shortRegionName,
   shortEveningPhone,
   shortMobilePhone,
-  shortlastName,
   shortAddress2,
   shortCityName
 } from './userData/userData';
@@ -23,14 +21,14 @@ const fakeToken = 'ugioypupitokurpoipirohihopgrjpgjhirguo[pir';
 
 describe('User Profile', () => {
   beforeAll(async () => {
-    await models.User.destroy({ force: true, truncate: { cascade: true } });
+    await models.Customer.destroy({ force: true, truncate: { cascade: true } });
     const user = await request(app).post('/api/users/register').send(newUser);
     // eslint-disable-next-line prefer-destructuring
     token = user.body.token;
   });
   afterAll(async () => {
     await server.close();
-    await models.User.destroy({ force: true, truncate: { cascade: true } });
+    await models.Customer.destroy({ force: true, truncate: { cascade: true } });
   });
 
   describe('profile view', () => {
@@ -43,8 +41,7 @@ describe('User Profile', () => {
           const { success, message, user } = res.body;
           expect(success).toEqual(true);
           expect(message).toEqual('User\'s profile succesfully retrieved');
-          expect(user.firstName).toEqual('Emeka');
-          expect(user.lastName).toEqual('Sammy');
+          expect(user.name.split(' ')[0]).toEqual('Maria');
           if (err) return done(err);
           done();
         });
@@ -92,32 +89,16 @@ describe('User Profile', () => {
           done();
         });
     });
-
-    it('should throw a validation error if the firstName update is too short', (done) => {
+    it('should throw a validation error if the name update is too short', (done) => {
       request(app)
         .put('/api/user')
         .set('Content-Type', 'application/json')
         .set('authorization', `Bearer ${token}`)
-        .send(shortFirstName)
+        .send(shortUserName)
         .end((err, res) => {
           const { errors, success } = res.body;
           expect(success).toEqual(false);
-          expect(errors.firstName).toEqual('Your first name must be between 3 and 200 characters.');
-          if (err) return done(err);
-          done();
-        });
-    });
-
-    it('should throw a validation error if the lastName update is too short', (done) => {
-      request(app)
-        .put('/api/user')
-        .set('Content-Type', 'application/json')
-        .set('authorization', `Bearer ${token}`)
-        .send(shortlastName)
-        .end((err, res) => {
-          const { errors, success } = res.body;
-          expect(success).toEqual(false);
-          expect(errors.lastName).toEqual('Your last name must be between 3 and 200 characters.');
+          expect(errors.name).toEqual('Your name must be between 3 and 50 characters.');
           if (err) return done(err);
           done();
         });

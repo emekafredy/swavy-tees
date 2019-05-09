@@ -7,12 +7,11 @@
     "node": "10.8.0"
   },
   "scripts": {
-    "pretest": "yarn undo:migrations && yarn migrations",
+    "pretest": "yarn undo:mig && yarn mig",
     "test": "jest --no-cache  --detectOpenHandles --runInBand --forceExit",
     "dev": "nodemon --exec babel-node ./",
-    "migrations": "sequelize db:migrate",
-    "undo:migrations": "sequelize db:migrate:undo:all",
-    "seed": "sequelize db:seed:all",
+    "mig": "sequelize db:migrate",
+    "undo:mig": "sequelize db:migrate:undo:all",
     "clean": "rm -rf build && mkdir build",
     "build": "yarn clean && babel ./ --out-dir build/ --ignore ./views,./coverage,./public,./node_modules,./.babelrc,./package.json",
     "start": "yarn build && node ./build/index.js"
@@ -25,10 +24,12 @@
     "babel-preset-env": "^1.7.0",
     "bcrypt": "^3.0.5",
     "body-parser": "^1.18.3",
+    "connect-session-sequelize": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^7.0.0",
     "express": "^4.16.4",
     "express-handlebars": "^3.0.2",
+    "express-session": "^1.16.1",
     "fancy-log": "^1.3.3",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.11",
@@ -39,6 +40,7 @@
     "sequelize": "^5.2.9",
     "sequelize-cli": "^5.4.0",
     "stripe": "^6.28.0",
+    "uniqid": "^5.0.3",
     "validator": "^10.11.0"
   },
   "jest": {

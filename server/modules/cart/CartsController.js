@@ -1,7 +1,10 @@
+import uniqid from 'uniqid';
+
 import models from '../../database/models';
 import { errorResponse } from '../../helpers/errorResponse';
 import CartInputValidator from '../../validators/cart';
 import errorHandler from '../../helpers/errorHandler';
+import { getAttributes } from '../../helpers/getAttributes';
 
 /**
  * @class CartsController
@@ -15,28 +18,26 @@ class CartsController {
    * @memberof CartsController
    */
   static async addProductToCart(req, res) {
-    const userId = req.user;
     const { productId } = req.params;
+    const { cartId } = req.session;
     const {
       sizeId, colorId, quantity
     } = req.body;
 
     try {
-      const errors = await CartInputValidator.validateAddProductToCart(req, res);
+      let errors = await CartInputValidator.validateAddProductToCart(req, res);
       if (errors) return errorHandler(res, errors, 400);
 
       const product = await models.Product.findOne({
-        where: { id: productId },
+        where: { product_id: productId },
         include: [{
-          model: models.Color,
-          as: 'colors',
-          attributes: { exclude: ['createdAt', 'updatedAt'], },
-          through: { attributes: [] }
-        }, {
-          model: models.Size,
-          as: 'sizes',
+          model: models.AttributeValue,
           attributes: { exclude: ['createdAt', 'updatedAt'] },
-          through: { attributes: [] }
+          through: { attributes: [] },
+          include: [{
+            model: models.Attribute,
+            attributes: { exclude: ['createdAt', 'updatedAt'] },
+          }]
         }]
       });
 
@@ -44,15 +45,29 @@ class CartsController {
         const error = 'Product not found';
         return errorResponse(error, 404, res);
       }
-      const foundColor = product.colors.find(color => color.id === colorId);
-      const foundSize = product.sizes.find(size => size.id === sizeId);
+
+
+      const { colors, sizes } = await getAttributes(product);
+      const foundColor = colors.find(color => color.attribute_value_id === colorId);
+      const foundSize = sizes.find(size => size.attribute_value_id === sizeId);
 
       if (!foundColor || !foundSize) {
         const error = 'We do not have your selected size or color for this product at the moment';
         return errorResponse(error, 404, res);
       }
+
+      const attributesArray = [];
+      await attributesArray.push(foundColor.value, foundSize.value);
+
+      errors = await CartInputValidator.checkItemDuplicate(req, res, cartId, attributesArray);
+      if (errors) return errorHandler(res, errors, 409);
+
       const addedProduct = {
-        productId, quantity, sizeId, colorId, customerId: userId,
+        product_id: productId,
+        quantity,
+        cart_id: cartId,
+        added_on: new Date(),
+        attributes: attributesArray.toString(),
       };
 
       await models.ShoppingCart.create(addedProduct);
@@ -70,10 +85,15 @@ class CartsController {
  * @memberof CartsController
  */
   static async getShoppingCart(req, res) {
-    const userId = req.user;
     try {
+      // eslint-disable-next-line prefer-destructuring
+      if (!req.session.cartId) {
+        const uniqueId = uniqid();
+        req.session.cartId = uniqueId;
+      }
+
       const cart = await models.ShoppingCart.findAll({
-        where: { customerId: userId },
+        where: { cart_id: req.session.cartId },
         include: [{
           model: models.Product,
           attributes: { exclude: ['createdAt', 'updatedAt'], },
@@ -86,33 +106,32 @@ class CartsController {
         let productsDiscount = 0;
 
         const cartValues = await Promise.all(cart.map(async (product) => {
-          const colors = await models.Color.findAll({ where: { id: product.colorId } });
-          const individualColors = await colors.map(color => ({
-            color: color.value
-          }));
-          const sizes = await models.Size.findAll({ where: { id: product.sizeId } });
-          const individualSizes = await sizes.map(size => ({
-            size: size.value
-          }));
+          const attributesArray = product.attributes.split(',');
+          const color = attributesArray[0];
+          const size = attributesArray[1];
 
-          const salesDiscount = parseFloat(product.Product.discountedPrice);
+          const salesDiscount = product.Product.discounted_price > 0 ? parseFloat((product.Product.price - product.Product.discounted_price) * product.quantity) : 0;
+
           const salesPrice = parseFloat(product.quantity * product.Product.price);
           productsDiscount += salesDiscount;
           subTotalPrice += salesPrice;
           productsQuantity += product.quantity;
+          const productTotalPrice = product.Product.discounted_price > 0 ? parseFloat(product.quantity * product.Product.discounted_price).toFixed(2)
+            : parseFloat(product.quantity * product.Product.price).toFixed(2);
 
           return {
-            id: product.id,
-            user: product.customerId,
+            id: product.item_id,
+            cartId: product.cart_id,
             discount: salesDiscount,
             quantity: product.quantity,
-            color: individualColors[0].color,
-            size: individualSizes[0].size,
+            color,
+            size,
             product: {
               name: product.Product.name,
               price: product.Product.price,
               thumbnail: product.Product.thumbnail,
-              productTotalPrice: parseFloat(product.quantity * product.Product.price)
+              productTotalPrice,
+              productDiscount: product.Product.discounted_price
             }
           };
         }));
@@ -122,13 +141,16 @@ class CartsController {
           message: 'cart succesfully retrieved',
           cart: cartValues,
           totalItems: productsQuantity,
-          subTotalPrice,
-          discount: productsDiscount,
-          totalPrice: subTotalPrice - productsDiscount,
+          subTotalPrice: subTotalPrice.toFixed(2),
+          discount: productsDiscount.toFixed(2),
+          totalPrice: (subTotalPrice - productsDiscount).toFixed(2),
         });
       }
+
       const message = 'No product found in your cart';
-      return errorResponse(message, 200, res);
+      return res.status(200).json({
+        success: true, message, cart
+      });
     } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }
@@ -142,11 +164,11 @@ class CartsController {
    * @memberof CartsController
    */
   static async removeProductFromCart(req, res) {
-    const userId = req.user;
-    const { cartId } = req.params;
+    const { id } = req.params;
+    const { cartId } = req.session;
     try {
       const cartProduct = await models.ShoppingCart.findOne({
-        where: { id: cartId, customerId: userId },
+        where: { item_id: id, cart_id: cartId },
       });
 
       if (!cartProduct) {
@@ -154,11 +176,7 @@ class CartsController {
         return errorResponse(error, 404, res);
       }
       await cartProduct.destroy();
-      return res.status(200).json({
-        success: true,
-        message: 'Product successfully removed from cart',
-        deletedProduct: cartProduct
-      });
+      return CartsController.getShoppingCart(req, res);
     } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }
@@ -172,13 +190,13 @@ class CartsController {
    * @memberof CartsController
    */
   static async updateProductQuantity(req, res) {
-    const userId = req.user;
-    const { cartId } = req.params;
+    const { id } = req.params;
+    const { cartId } = req.session;
     const { quantity } = req.body;
     
     try {
       const cartProduct = await models.ShoppingCart.findOne({
-        where: { id: cartId, customerId: userId },
+        where: { item_id: id, cart_id: cartId },
       });
 
       if (!cartProduct) {
@@ -201,16 +219,15 @@ class CartsController {
    * @memberof CartsController
    */
   static async clearCart(req, res) {
-    const userId = req.user;
+    const { cartId } = req.session;
     try {
-      const cart = await models.ShoppingCart.findOne({ where: { customerId: userId } });
+      const cart = await models.ShoppingCart.findOne({ where: { cart_id: cartId } });
 
       if (!cart) {
         const error = 'You have no product in your cart';
         return errorResponse(error, 404, res);
       }
-
-      await models.ShoppingCart.destroy({ where: { customerId: userId } });
+      await models.ShoppingCart.destroy({ where: { cart_id: cartId } });
       return res.status(200).json({
         success: true,
         message: 'Cart successfully cleared',

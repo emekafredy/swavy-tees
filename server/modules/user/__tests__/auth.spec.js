@@ -11,19 +11,18 @@ import {
   validLogin,
   invalidLogin,
   missingLoginValues,
-  shortfirstName,
-  shortLastName
+  shortName
 } from './userData/userData';
 
 
 describe('User Authentication', () => {
   beforeAll(async () => {
-    await models.User.destroy({ force: true, truncate: { cascade: true } });
+    await models.Customer.destroy({ force: true, truncate: { cascade: true } });
   });
 
   afterAll(async () => {
     await server.close();
-    await models.User.destroy({ force: true, truncate: { cascade: true } });
+    await models.Customer.destroy({ force: true, truncate: { cascade: true } });
   });
 
   describe('user signup', () => {
@@ -80,36 +79,22 @@ describe('User Authentication', () => {
         .end((err, res) => {
           const { errors, success } = res.body;
           expect(success).toEqual(false);
-          expect(errors.firstName).toEqual('First name is required.');
-          expect(errors.lastName).toEqual('Last name is required.');
+          expect(errors.name).toEqual('Name is required.');
           expect(errors.email).toEqual('Email address is required.');
           expect(errors.password).toEqual('Password is required.');
           if (err) return done(err);
           done();
         });
     });
-    it('should throw a validation error when the first name is too short', (done) => {
+    it('should throw a validation error when the name is too short', (done) => {
       request(app)
         .post('/api/users/register')
         .set('Content-Type', 'application/json')
-        .send(shortfirstName)
+        .send(shortName)
         .end((err, res) => {
           const { errors, success } = res.body;
           expect(success).toEqual(false);
-          expect(errors.firstName).toEqual('Your first name must be between 3 and 200 characters.');
-          if (err) return done(err);
-          done();
-        });
-    });
-    it('should throw a validation error when the last name is too short', (done) => {
-      request(app)
-        .post('/api/users/register')
-        .set('Content-Type', 'application/json')
-        .send(shortLastName)
-        .end((err, res) => {
-          const { errors, success } = res.body;
-          expect(success).toEqual(false);
-          expect(errors.lastName).toEqual('Your last name must be between 3 and 200 characters.');
+          expect(errors.name).toEqual('Name must be between 3 and 50 characters.');
           if (err) return done(err);
           done();
         });

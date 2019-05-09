@@ -1,5 +1,11 @@
 export default (sequelize, DataTypes) => {
   const Product = sequelize.define('Product', {
+    product_id: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    },
     name: {
       allowNull: false,
       type: DataTypes.STRING(100)
@@ -12,7 +18,7 @@ export default (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.DECIMAL(10, 2)
     },
-    discountedPrice: {
+    discounted_price: {
       allowNull: false,
       type: DataTypes.DECIMAL(10, 2),
       defaultValue: 0.00,
@@ -20,7 +26,7 @@ export default (sequelize, DataTypes) => {
     image: {
       type: DataTypes.STRING(150)
     },
-    image2: {
+    image_2: {
       type: DataTypes.STRING(150)
     },
     thumbnail: {
@@ -31,23 +37,22 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.INTEGER(6),
       defaultValue: 0,
     }
-  }, {});
+  }, {
+    tableName: 'product',
+    timestamps: false,
+  });
   Product.associate = (models) => {
-    const { Category, Color, Size } = models;
+    const {
+      Category, AttributeValue, ProductCategory, ProductAttribute
+    } = models;
     Product.belongsToMany(Category, {
-      through: 'ProductCategories',
+      through: ProductCategory,
       as: 'categories',
-      foreignKey: 'productId',
+      foreignKey: 'product_id',
     });
-    Product.belongsToMany(Color, {
-      through: 'ProductColors',
-      as: 'colors',
-      foreignKey: 'productId'
-    });
-    Product.belongsToMany(Size, {
-      through: 'ProductSizes',
-      as: 'sizes',
-      foreignKey: 'productId'
+    Product.belongsToMany(AttributeValue, {
+      through: ProductAttribute,
+      foreignKey: 'product_id'
     });
   };
   return Product;
