@@ -1,6 +1,12 @@
 export default (sequelize, DataTypes) => {
   const Category = sequelize.define('Category', {
-    departmentId: {
+    category_id: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    },
+    department_id: {
       allowNull: false,
       type: DataTypes.INTEGER
     },
@@ -11,16 +17,19 @@ export default (sequelize, DataTypes) => {
     description: {
       type: DataTypes.STRING(1000)
     }
-  }, {});
+  }, {
+    tableName: 'category',
+    timestamps: false,
+  });
   Category.associate = (models) => {
-    const { Product, Department } = models;
+    const { Product, Department, ProductCategory } = models;
     Category.belongsToMany(Product, {
-      through: 'ProductCategories',
+      through: ProductCategory,
       as: 'products',
-      foreignKey: 'categoryId',
+      foreignKey: 'category_id',
     });
     Category.belongsTo(Department, {
-      foreignKey: 'departmentId'
+      foreignKey: 'department_id'
     });
   };
   return Category;

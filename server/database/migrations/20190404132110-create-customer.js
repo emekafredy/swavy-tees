@@ -1,16 +1,12 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('Users', {
-    id: {
+  up: (queryInterface, Sequelize) => queryInterface.createTable('customer', {
+    customer_id: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
       type: Sequelize.INTEGER
     },
-    firstName: {
-      allowNull: false,
-      type: Sequelize.STRING(50)
-    },
-    lastName: {
+    name: {
       allowNull: false,
       type: Sequelize.STRING(50)
     },
@@ -22,13 +18,13 @@ module.exports = {
       allowNull: false,
       type: Sequelize.STRING(100)
     },
-    creditCard: {
+    credit_card: {
       type: Sequelize.STRING
     },
-    address1: {
+    address_1: {
       type: Sequelize.STRING(100)
     },
-    address2: {
+    address_2: {
       type: Sequelize.STRING(100)
     },
     city: {
@@ -37,39 +33,31 @@ module.exports = {
     region: {
       type: Sequelize.STRING(100)
     },
-    shippingRegionId: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      defaultValue: 1
-    },
-    postalCode: {
+    postal_code: {
       type: Sequelize.STRING(100)
     },
     country: {
       type: Sequelize.STRING(100)
     },
-    dayPhone: {
+    shipping_region_id: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      defaultValue: 1
+    },
+    day_phone: {
       type: Sequelize.STRING(100)
     },
-    eveningPhone: {
+    evening_phone: {
       type: Sequelize.STRING(100)
     },
-    mobilePhone: {
+    mobile_phone: {
       type: Sequelize.STRING(100)
     },
     role: {
       allowNull: false,
       type: Sequelize.ENUM('Customer', 'Admin', 'Super Admin'),
       defaultValue: 'Customer'
-    },
-    createdAt: {
-      allowNull: false,
-      type: Sequelize.DATE
-    },
-    updatedAt: {
-      allowNull: false,
-      type: Sequelize.DATE
     }
   }),
-  down: queryInterface => queryInterface.dropTable('Users')
+  down: queryInterface => queryInterface.dropTable('customer')
 };

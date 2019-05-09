@@ -1,6 +1,6 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('Products', {
-    id: {
+  up: (queryInterface, Sequelize) => queryInterface.createTable('product', {
+    product_id: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
@@ -18,7 +18,7 @@ module.exports = {
       allowNull: false,
       type: Sequelize.DECIMAL(10, 2)
     },
-    discountedPrice: {
+    discounted_price: {
       allowNull: false,
       type: Sequelize.DECIMAL(10, 2),
       defaultValue: 0.00,
@@ -26,7 +26,7 @@ module.exports = {
     image: {
       type: Sequelize.STRING(150)
     },
-    image2: {
+    image_2: {
       type: Sequelize.STRING(150)
     },
     thumbnail: {
@@ -36,15 +36,7 @@ module.exports = {
       allowNull: false,
       type: Sequelize.INTEGER(6),
       defaultValue: 0,
-    },
-    createdAt: {
-      allowNull: false,
-      type: Sequelize.DATE
-    },
-    updatedAt: {
-      allowNull: false,
-      type: Sequelize.DATE
     }
   }),
-  down: queryInterface => queryInterface.dropTable('Products')
+  down: queryInterface => queryInterface.dropTable('product')
 };

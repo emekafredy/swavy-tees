@@ -1,44 +1,36 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('ShoppingCarts', {
-    id: {
+  up: (queryInterface, Sequelize) => queryInterface.createTable('shopping_cart', {
+    item_id: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
       type: Sequelize.INTEGER
     },
-    productId: {
+    cart_id: {
+      allowNull: false,
+      type: Sequelize.STRING(32)
+    },
+    product_id: {
       allowNull: false,
       type: Sequelize.INTEGER
+    },
+    attributes: {
+      type: Sequelize.STRING(1000),
+      allowNull: false
     },
     quantity: {
       allowNull: false,
       type: Sequelize.INTEGER
     },
-    buyNow: {
+    buy_now: {
       allowNull: false,
       type: Sequelize.BOOLEAN,
       defaultValue: true
     },
-    sizeId: {
+    added_on: {
       allowNull: false,
-      type: Sequelize.INTEGER
-    },
-    colorId: {
-      allowNull: false,
-      type: Sequelize.INTEGER
-    },
-    customerId: {
-      allowNull: false,
-      type: Sequelize.INTEGER
-    },
-    createdAt: {
-      allowNull: false,
-      type: Sequelize.DATE
-    },
-    updatedAt: {
-      allowNull: false,
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
     }
   }),
-  down: queryInterface => queryInterface.dropTable('ShoppingCarts')
+  down: queryInterface => queryInterface.dropTable('shopping_cart')
 };

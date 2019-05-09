@@ -18,7 +18,7 @@ class CheckoutController {
    * @memberof CheckoutController
    */
   static getCheckout(req, res) {
-    res.render('index', { publishableKey });
+    res.json({ publishableKey });
   }
 
   /**
@@ -28,7 +28,10 @@ class CheckoutController {
    * @param {object} res express response object
    * @memberof CheckoutController
    */
-  static async checkout(req, res, purchasePrice, userId, shippingId, stripeEmail, stripeToken) {
+  /* istanbul ignore next */
+  static async checkout(req, res, purchasePrice, shippingId, stripeEmail, stripeToken) {
+    const userId = req.user;
+    const { cartId } = req.session;
     try {
       const customer = await stripeKey.customers.create({
         email: stripeEmail,
@@ -43,7 +46,7 @@ class CheckoutController {
       });
 
       const cart = await models.ShoppingCart.findAll({
-        where: { customerId: userId },
+        where: { cart_id: cartId },
         include: [{
           model: models.Product,
           attributes: { exclude: ['createdAt', 'updatedAt'], },
@@ -51,33 +54,23 @@ class CheckoutController {
       });
 
       if (cart.length !== 0) {
-        const cartValues = await Promise.all(cart.map(async (product) => {
-          const colors = await models.Color.findAll({ where: { id: product.colorId } });
-          const individualColors = await colors.map(color => ({
-            colorId: color.id
-          }));
-          const sizes = await models.Size.findAll({ where: { id: product.sizeId } });
-          const individualSizes = await sizes.map(size => ({
-            sizeId: size.id
-          }));
-
-          return {
-            totalAmount: parseFloat(product.quantity * product.Product.price),
-            comments: payment.description,
-            authCode: stripeToken,
-            customerId: product.customerId,
-            shippingId,
-            reference: payment.balance_transaction,
-            colorId: individualColors[0].colorId,
-            sizeId: individualSizes[0].sizeId,
-            productId: product.Product.id,
-            quantity: product.quantity,
-            unitCost: product.Product.price
-          };
-        }));
+        const cartValues = await Promise.all(cart.map(async product => ({
+          total_amount: parseFloat(product.quantity * product.Product.price),
+          created_on: new Date(),
+          comments: payment.description,
+          customer_id: userId,
+          auth_code: stripeToken,
+          reference: payment.balance_transaction,
+          shipping_id: shippingId,
+          product_id: product.Product.product_id,
+          attributes: product.attributes,
+          product_name: product.Product.name,
+          quantity: product.quantity,
+          unit_cost: product.Product.price
+        })));
         const createOrder = await models.Order.bulkCreate(cartValues);
         if (createOrder) {
-          await models.ShoppingCart.destroy({ where: { customerId: userId } });
+          await models.ShoppingCart.destroy({ where: { cart_id: cartId } });
           return res.status(200).json({
             success: true,
             message: 'Payment successfully made'
@@ -97,9 +90,10 @@ class CheckoutController {
    * @param {object} res express response object
    * @memberof CheckoutController
    */
+  /* istanbul ignore next */
   static async makePayment(req, res) {
     const { stripeEmail, stripeToken, shippingId } = req.body;
-    const userId = req.user;
+    const { cartId } = req.session;
     try {
       const shippingExists = await models.Shipping.findByPk(shippingId);
       if (!shippingExists) {
@@ -107,9 +101,9 @@ class CheckoutController {
         return errorResponse(error, 404, res);
       }
 
-      const costForShipping = parseFloat(shippingExists.shippingCost);
+      const costForShipping = parseFloat(shippingExists.shipping_cost);
       const cart = await models.ShoppingCart.findAll({
-        where: { customerId: userId },
+        where: { cart_id: cartId },
         include: [{
           model: models.Product,
           attributes: { exclude: ['createdAt', 'updatedAt'], },
@@ -120,7 +114,7 @@ class CheckoutController {
       let productsDiscount = 0;
 
       await Promise.all(cart.map(async (product) => {
-        const salesDiscount = parseFloat(product.Product.discountedPrice);
+        const salesDiscount = parseFloat(product.Product.discounted_price);
         const salesPrice = parseFloat(product.quantity * product.Product.price);
         subTotalPrices += salesPrice;
         productsDiscount += salesDiscount;
@@ -129,7 +123,7 @@ class CheckoutController {
       const totalPrice = subTotalPrices - productsDiscount;
       const purchasePrice = Math.round((totalPrice + costForShipping) * 100);
 
-      return CheckoutController.checkout(req, res, purchasePrice, userId, shippingExists.id, stripeEmail, stripeToken);
+      return CheckoutController.checkout(req, res, purchasePrice, shippingExists.id, stripeEmail, stripeToken);
     } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }
@@ -146,7 +140,7 @@ class CheckoutController {
     const userId = req.user;
     try {
       const orders = await models.Order.findAll({
-        where: { customerId: userId },
+        where: { customer_id: userId },
         include: [{
           model: models.Product,
           attributes: { exclude: ['createdAt', 'updatedAt'], },
@@ -155,25 +149,20 @@ class CheckoutController {
       
       if (orders.length !== 0) {
         const orderValues = await Promise.all(orders.map(async (product) => {
-          const colors = await models.Color.findAll({ where: { id: product.colorId } });
-          const individualColors = await colors.map(color => ({
-            color: color.value
-          }));
-          const sizes = await models.Size.findAll({ where: { id: product.sizeId } });
-          const individualSizes = await sizes.map(size => ({
-            size: size.value
-          }));
+          const attributesArray = product.attributes.split(',');
+          const color = attributesArray[0];
+          const size = attributesArray[1];
 
           return {
-            id: product.id,
-            user: product.customerId,
+            id: product.order_id,
+            user: product.customer_id,
             quantity: product.quantity,
-            totalAmount: product.totalAmount,
+            totalAmount: product.total_amount,
             status: product.status,
-            color: individualColors[0].color,
-            size: individualSizes[0].size,
+            color,
+            size,
             comments: product.comments,
-            createdOn: product.createdAt,
+            created_on: product.created_on,
             product: {
               name: product.Product.name,
               price: product.Product.price,
@@ -208,7 +197,7 @@ class CheckoutController {
       const regions = await models.ShippingRegion.findAll({
         include: [{
           model: models.Shipping,
-          attributes: { exclude: ['createdAt', 'updatedAt', 'shippingRegionId'], },
+          attributes: { exclude: ['createdAt', 'updatedAt', 'shipping_region_id'], },
         }]
       });
 

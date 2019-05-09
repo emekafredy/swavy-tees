@@ -1,11 +1,21 @@
 export default (sequelize, DataTypes) => {
   const Order = sequelize.define('Order', {
-    totalAmount: {
+    order_id: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    },
+    total_amount: {
       allowNull: false,
       type: DataTypes.DECIMAL(10, 2),
       defaultValue: 0.00
     },
-    shippedOn: {
+    created_on: {
+      allowNull: false,
+      type: DataTypes.DATE
+    },
+    shipped_on: {
       type: DataTypes.DATE
     },
     status: {
@@ -16,50 +26,53 @@ export default (sequelize, DataTypes) => {
     comments: {
       type: DataTypes.STRING(255)
     },
-    authCode: {
-      type: DataTypes.STRING(50)
-    },
-    customerId: {
+    customer_id: {
       allowNull: false,
       type: DataTypes.INTEGER
     },
-    shippingId: {
-      type: DataTypes.INTEGER
-    },
-    taxId: {
-      type: DataTypes.INTEGER
+    auth_code: {
+      type: DataTypes.STRING(50)
     },
     reference: {
       type: DataTypes.STRING(50)
     },
-    productId: {
+    shipping_id: {
+      type: DataTypes.INTEGER
+    },
+    tax_id: {
+      type: DataTypes.INTEGER
+    },
+    product_id: {
       allowNull: false,
       type: DataTypes.INTEGER
     },
-    sizeId: {
-      allowNull: false,
-      type: DataTypes.INTEGER
+    attributes: {
+      type: DataTypes.STRING(1000),
+      allowNull: false
     },
-    colorId: {
+    product_name: {
       allowNull: false,
-      type: DataTypes.INTEGER
+      type: DataTypes.STRING(100)
     },
     quantity: {
       allowNull: false,
       type: DataTypes.INTEGER
     },
-    unitCost: {
+    unit_cost: {
       allowNull: false,
       type: DataTypes.DECIMAL(10, 2)
     }
-  }, {});
+  }, {
+    tableName: 'orders',
+    timestamps: false
+  });
   Order.associate = (models) => {
-    const { Product, User } = models;
+    const { Product, Customer } = models;
     Order.belongsTo(Product, {
-      foreignKey: 'productId',
+      foreignKey: 'product_id',
     });
-    Order.belongsTo(User, {
-      foreignKey: 'customerId',
+    Order.belongsTo(Customer, {
+      foreignKey: 'customer_id',
     });
   };
   return Order;

@@ -88,12 +88,12 @@ describe('Products Endpoint', () => {
 
   it('should return a 404 error if queried keyword does not exists', (done) => {
     request(app)
-      .get('/api/products?keyword=uiy9780888900i88884')
+      .get('/api/products?keyword=ioji0ii0i0i')
       .set('Content-Type', 'application/json')
       .end((err, res) => {
         const { success, error } = res.body;
         expect(success).toEqual(false);
-        expect(error).toEqual('No product found for uiy9780888900i88884');
+        expect(error).toEqual('No product found for ioji0ii0i0i');
         if (err) return done(err);
         done();
       });
@@ -108,7 +108,7 @@ describe('Products Endpoint', () => {
         expect(success).toEqual(true);
         expect(message).toEqual('Categories succesfully retrieved');
         expect(categories[0].name).toEqual('French');
-        expect(categories[0].departmentId).toEqual(1);
+        expect(categories[0].department_id).toEqual(1);
         if (err) return done(err);
         done();
       });

@@ -1,16 +1,21 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('Orders', {
-    id: {
+  up: (queryInterface, Sequelize) => queryInterface.createTable('orders', {
+    order_id: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
       type: Sequelize.INTEGER
     },
-    totalAmount: {
+    total_amount: {
+      allowNull: false,
       type: Sequelize.DECIMAL(10, 2),
       defaultValue: 0.00
     },
-    shippedOn: {
+    created_on: {
+      allowNull: false,
+      type: Sequelize.DATE
+    },
+    shipped_on: {
       type: Sequelize.DATE
     },
     status: {
@@ -21,50 +26,42 @@ module.exports = {
     comments: {
       type: Sequelize.STRING(255)
     },
-    authCode: {
-      type: Sequelize.STRING(50)
-    },
-    customerId: {
+    customer_id: {
       allowNull: false,
       type: Sequelize.INTEGER
     },
-    shippingId: {
-      type: Sequelize.INTEGER
-    },
-    taxId: {
-      type: Sequelize.INTEGER
+    auth_code: {
+      type: Sequelize.STRING(50)
     },
     reference: {
       type: Sequelize.STRING(50)
     },
-    productId: {
+    shipping_id: {
+      type: Sequelize.INTEGER
+    },
+    tax_id: {
+      type: Sequelize.INTEGER
+    },
+    product_id: {
       allowNull: false,
       type: Sequelize.INTEGER
     },
-    sizeId: {
-      allowNull: false,
-      type: Sequelize.INTEGER
+    attributes: {
+      type: Sequelize.STRING(1000),
+      allowNull: false
     },
-    colorId: {
+    product_name: {
       allowNull: false,
-      type: Sequelize.INTEGER
+      type: Sequelize.STRING(100)
     },
     quantity: {
       allowNull: false,
       type: Sequelize.INTEGER
     },
-    unitCost: {
+    unit_cost: {
       allowNull: false,
       type: Sequelize.DECIMAL(10, 2)
-    },
-    createdAt: {
-      allowNull: false,
-      type: Sequelize.DATE
-    },
-    updatedAt: {
-      allowNull: false,
-      type: Sequelize.DATE
     }
   }),
-  down: queryInterface => queryInterface.dropTable('Orders')
+  down: queryInterface => queryInterface.dropTable('orders')
 };

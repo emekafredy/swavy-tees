@@ -1,22 +1,19 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('category', {
-    category_id: {
+  up: (queryInterface, Sequelize) => queryInterface.createTable('attribute_value', {
+    attribute_value_id: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
       type: Sequelize.INTEGER
     },
-    department_id: {
+    attribute_id: {
       allowNull: false,
       type: Sequelize.INTEGER
     },
-    name: {
+    value: {
       allowNull: false,
       type: Sequelize.STRING(100)
-    },
-    description: {
-      type: Sequelize.STRING(1000)
     }
   }),
-  down: queryInterface => queryInterface.dropTable('category')
+  down: queryInterface => queryInterface.dropTable('attribute_value')
 };

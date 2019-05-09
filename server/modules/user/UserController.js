@@ -19,12 +19,14 @@ class UserController {
    */
   static async registerUser(req, res) {
     const {
-      firstName, lastName, email, password
+      name, email, password
     } = req.body;
     const hashedPass = await hash(password, 10);
 
     const newUser = {
-      firstName, lastName, email, password: hashedPass
+      name,
+      email,
+      password: hashedPass
     };
 
     try {
@@ -32,13 +34,14 @@ class UserController {
       if (errors) return errorHandler(res, errors, 400);
 
       await trimData(newUser);
-      const user = await models.User.create(newUser);
+      const user = await models.Customer.create(newUser);
       const token = await generateToken(user);
+      const userFirstName = newUser.name.split(' ')[0];
       return res.status(201).json({
         success: true,
         message: 'Successful user registeration',
         token,
-        userFirstName: newUser.firstName,
+        userFirstName,
       });
     } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
@@ -58,7 +61,7 @@ class UserController {
       const errors = await UserProfileValidator.validateLogin(req);
       if (errors) return errorHandler(res, errors, 400);
 
-      const user = await models.User.findOne({
+      const user = await models.Customer.findOne({
         where: { email }
       });
   
@@ -74,11 +77,12 @@ class UserController {
       }
   
       const token = await generateToken(user);
+      const userFirstName = user.name.split(' ')[0];
       return res.status(200).json({
         success: true,
         message: 'Successful Login',
         token,
-        userFirstName: user.firstName,
+        userFirstName,
       });
     } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
@@ -95,8 +99,8 @@ class UserController {
   static async getUser(req, res) {
     const userId = req.user;
     try {
-      const user = await models.User.findOne({
-        where: { id: userId },
+      const user = await models.Customer.findOne({
+        where: { customer_id: userId },
         attributes: { exclude: ['password'] }
       });
       if (!user) { /* istanbul ignore next */
@@ -124,11 +128,11 @@ class UserController {
   static async updateProfile(req, res) {
     const userId = req.user;
     const {
-      firstName, lastName, address1, address2, city, region, postalCode, country, dayPhone, eveningPhone, mobilePhone
+      name, address1, address2, city, region, postalCode, country, dayPhone, eveningPhone, mobilePhone
     } = req.body;
     try {
-      const user = await models.User.findOne({
-        where: { id: userId },
+      const user = await models.Customer.findOne({
+        where: { customer_id: userId },
         attributes: { exclude: ['password'] }
       });
       if (!user) { /* istanbul ignore next */
@@ -141,17 +145,16 @@ class UserController {
       if (errors) return errorHandler(res, errors, 400);
 
       const userUpdateData = {
-        firstName: firstName || (user.firstName || ''),
-        lastName: lastName || (user.lastName || ''),
-        address1: address1 || (user.address1 || ''),
-        address2: address2 || (user.address2 || ''),
+        name: name || (user.name || ''),
+        address_1: address1 || (user.address_1 || ''),
+        address_2: address2 || (user.address_2 || ''),
         city: city || (user.city || ''),
         region: region || (user.region || ''),
-        postalCode: postalCode || (user.postalCode || ''),
+        postal_code: postalCode || (user.postal_code || ''),
         country: country || (user.country || ''),
-        dayPhone: dayPhone || (user.dayPhone || ''),
-        eveningPhone: eveningPhone || (user.eveningPhone || ''),
-        mobilePhone: mobilePhone || (user.mobilePhone || ''),
+        day_phone: dayPhone || (user.day_phone || ''),
+        evening_phone: eveningPhone || (user.evening_phone || ''),
+        mobile_phone: mobilePhone || (user.mobile_phone || ''),
       };
       await trimData(userUpdateData);
       const updatedUser = await user.update(userUpdateData);

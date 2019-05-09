@@ -1,7 +1,7 @@
 import { Op } from 'sequelize';
 import models from '../../database/models';
 import { errorResponse } from '../../helpers/errorResponse';
-
+import { getAttributes } from '../../helpers/getAttributes';
 /**
  * @class ProductsController
  */
@@ -15,7 +15,7 @@ class ProductsController {
   static getPagination(req) {
     let { page } = req.query;
     page = page || 1;
-    const limit = 20;
+    const limit = 12;
     const offset = limit * (page - 1);
     return {
       page, limit, offset,
@@ -30,13 +30,16 @@ class ProductsController {
    * @memberof ProductsController
    */
   static getQueryClause(category, keyword) {
-    const queryClause = {};
+    const queryClause = {
+      attributes: { exclude: ['createdAt', 'updatedAt'] }
+    };
     if (category) {
       queryClause.include = [{
         model: models.Category,
         as: 'categories',
         where: { name: category },
-        attributes: { exclude: ['createdAt', 'updatedAt'] }
+        attributes: { exclude: ['createdAt', 'updatedAt'] },
+        through: { attributes: [] }
       }];
     }
 
@@ -71,7 +74,7 @@ class ProductsController {
       queryClause.offset = offset;
 
       const products = await models.Product.findAndCountAll(queryClause);
-      if (products.rows.length < 1) {
+      if (products.rows.length < 1) { /* istanbul ignore next */
         const error = `No product found for ${category || keyword || 'now'}`;
         return errorResponse(error, 404, res);
       }
@@ -82,9 +85,11 @@ class ProductsController {
         message: `${category || ''} Products succesfully retrieved`,
         products: rows,
         currentPage: page,
-        pages,
-        count,
+        pageCount: pages,
+        total: count,
+        limit,
         categoryName: category ? rows[0].categories[0].name : '',
+        keyword: keyword || '',
         categoryDescription: category ? rows[0].categories[0].description : ''
       });
     } catch (error) { /* istanbul ignore next */
@@ -101,7 +106,9 @@ class ProductsController {
    */
   static async getCategories(req, res) {
     try {
-      const categories = await models.Category.findAll();
+      const categories = await models.Category.findAll({
+        attributes: { exclude: ['createdAt', 'updatedAt'] },
+      });
       return res.status(200).json({
         success: true,
         message: 'Categories succesfully retrieved',
@@ -149,29 +156,53 @@ class ProductsController {
     const { id } = req.params;
     try {
       const product = await models.Product.findOne({
-        where: { id },
+        where: { product_id: id },
+        attributes: { exclude: ['createdAt', 'updatedAt'] },
         include: [{
-          model: models.Color,
-          as: 'colors',
-          attributes: { exclude: ['createdAt', 'updatedAt'], },
-          through: { attributes: [] }
-        }, {
-          model: models.Size,
-          as: 'sizes',
+          model: models.AttributeValue,
           attributes: { exclude: ['createdAt', 'updatedAt'] },
-          through: { attributes: [] }
+          through: { attributes: [] },
+          include: [{
+            model: models.Attribute,
+            attributes: { exclude: ['createdAt', 'updatedAt'] },
+          }]
         }]
       });
 
+      
       if (!product) {
         const error = 'Product not found';
         return errorResponse(error, 404, res);
       }
-
+      
+      const { colors, sizes } = await getAttributes(product);
+      const colorValues = colors.map(color => ({
+        colorId: color.attribute_value_id,
+        value: color.value,
+        attributeId: color.attribute_id
+      }));
+      const sizeValues = sizes.map(size => ({
+        sizeId: size.attribute_value_id,
+        value: size.value,
+        attributeId: size.attribute_id
+      }));
+      
       return res.status(200).json({
         success: true,
         message: 'Product succesfully retrieved',
-        product
+        product: {
+          id: product.product_id,
+          name: product.name,
+          description: product.description,
+          price: product.price,
+          discounted_price: product.discounted_price,
+          image: product.image,
+          image_2: product.image_2,
+          thumbnail: product.thumbnail,
+          display: product.display,
+          colors: colorValues,
+          sizes: sizeValues,
+        }
       });
     } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);

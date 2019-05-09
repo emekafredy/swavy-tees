@@ -8,10 +8,9 @@ import {
   departmentsData,
   categoriesData,
   productCategories,
-  colorData,
-  sizeData,
-  productColorsData,
-  productSizesData
+  attributeData,
+  attributeValueData,
+  productAttributeData,
 } from '../../products/__tests__/productData/products';
 import { ordersData, shippingData, shippingRegionData } from '../checkoutData/checkout';
 
@@ -19,15 +18,14 @@ let token; let token2;
 
 describe('Checkout', () => {
   beforeAll(async () => {
-    await models.User.destroy({ force: true, truncate: { cascade: true } });
+    await models.Customer.destroy({ force: true, truncate: { cascade: true } });
     await models.Department.destroy({ force: true, truncate: { cascade: true } });
     await models.Category.destroy({ force: true, truncate: { cascade: true } });
     await models.Product.destroy({ force: true, truncate: { cascade: true } });
     await models.ProductCategory.destroy({ force: true, truncate: { cascade: true } });
-    await models.Size.destroy({ force: true, truncate: { cascade: true } });
-    await models.Color.destroy({ force: true, truncate: { cascade: true } });
-    await models.ProductColor.destroy({ force: true, truncate: { cascade: true } });
-    await models.ProductSize.destroy({ force: true, truncate: { cascade: true } });
+    await models.Attribute.destroy({ force: true, truncate: { cascade: true } });
+    await models.AttributeValue.destroy({ force: true, truncate: { cascade: true } });
+    await models.ProductAttribute.destroy({ force: true, truncate: { cascade: true } });
     await models.Order.destroy({ force: true, truncate: { cascade: true } });
     await models.Shipping.destroy({ force: true, truncate: { cascade: true } });
     await models.ShippingRegion.destroy({ force: true, truncate: { cascade: true } });
@@ -35,10 +33,9 @@ describe('Checkout', () => {
     await models.Category.bulkCreate(categoriesData);
     await models.Product.bulkCreate(productsData);
     await models.ProductCategory.bulkCreate(productCategories);
-    await models.Size.bulkCreate(sizeData);
-    await models.Color.bulkCreate(colorData);
-    await models.ProductColor.bulkCreate(productColorsData);
-    await models.ProductSize.bulkCreate(productSizesData);
+    await models.Attribute.bulkCreate(attributeData);
+    await models.AttributeValue.bulkCreate(attributeValueData);
+    await models.ProductAttribute.bulkCreate(productAttributeData);
     await models.Order.bulkCreate(ordersData);
     await models.Shipping.bulkCreate(shippingData);
     await models.ShippingRegion.bulkCreate(shippingRegionData);
@@ -66,21 +63,6 @@ describe('Checkout', () => {
   });
 
   describe('get orders', () => {
-    xit('should successfully fetch a logged in user\'s orders', (done) => {
-      request(app)
-        .get('/api/orders')
-        .set('Content-Type', 'application/json')
-        .set('authorization', `Bearer ${token}`)
-        .end((err, res) => {
-          const { success, message, order } = res.body;
-          expect(success).toEqual(true);
-          expect(message).toEqual('orders succesfully retrieved');
-          expect(order[0].totalAmount).toEqual(113.94);
-          if (err) return done(err);
-          done();
-        });
-    });
-
     it('should return an empty result if user has no order', (done) => {
       request(app)
         .get('/api/orders')
@@ -106,7 +88,7 @@ describe('Checkout', () => {
           const { success, message, regions } = res.body;
           expect(success).toEqual(true);
           expect(message).toEqual('Regions succesfully retrieved');
-          expect(regions[0].shippingRegion).toEqual('US / Canada');
+          expect(regions[0].shipping_region).toEqual('US / Canada');
           if (err) return done(err);
           done();
         });

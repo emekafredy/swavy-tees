@@ -7,19 +7,13 @@ class UserProfileValidator {
     try {
       const errors = {};
       const {
-        firstName, lastName, email, password, confirmPassword
+        name, email, password, confirmPassword
       } = req.body;
   
-      if (!firstName || validator.isEmpty(firstName)) {
-        errors.firstName = 'First name is required.';
-      } else if (!validator.isLength(firstName, { min: 3, max: 200 })) {
-        errors.firstName = 'Your first name must be between 3 and 200 characters.';
-      }
-    
-      if (!lastName || validator.isEmpty(lastName)) {
-        errors.lastName = 'Last name is required.';
-      } else if (!validator.isLength(lastName, { min: 3, max: 200 })) {
-        errors.lastName = 'Your last name must be between 3 and 200 characters.';
+      if (!name || validator.isEmpty(name.trim())) {
+        errors.name = 'Name is required.';
+      } else if (!validator.isLength(name.trim(), { min: 3, max: 50 })) {
+        errors.name = 'Name must be between 3 and 50 characters.';
       }
       
       if (!email || validator.isEmpty(email)) {
@@ -40,7 +34,7 @@ class UserProfileValidator {
         errors.confirmPassword = 'Passwords do not match.';
       }
 
-      const registeredEmail = await models.User.findOne({
+      const registeredEmail = await models.Customer.findOne({
         where: { email },
         attributes: ['email']
       });
@@ -66,7 +60,7 @@ class UserProfileValidator {
     if (!password || validator.isEmpty(password)) {
       errors.password = 'Password is required.';
     }
-    const user = await models.User.findOne({
+    const user = await models.Customer.findOne({
       where: { email }
     });
 
@@ -80,21 +74,17 @@ class UserProfileValidator {
     try {
       const errors = {};
       const {
-        firstName, lastName, address1, address2, city, region, postalCode, country, dayPhone, eveningPhone, mobilePhone
+        name, address1, address2, city, region, postalCode, country, dayPhone, eveningPhone, mobilePhone
       } = req.body;
-
-      if (firstName && !validator.isLength(firstName, { min: 3, max: 200 })) {
-        errors.firstName = 'Your first name must be between 3 and 200 characters.';
-      }
-    
-      if (lastName && !validator.isLength(lastName, { min: 3, max: 200 })) {
-        errors.lastName = 'Your last name must be between 3 and 200 characters.';
+      
+      if (name && !validator.isLength(name.trim(), { min: 3, max: 50 })) {
+        errors.name = 'Your name must be between 3 and 50 characters.';
       }
 
       if (address1 && !validator.isLength(address1, { min: 6, max: 200 })) {
         errors.address1 = 'Your address should have between 6 and 200 characters.';
       }
-
+    
       if (address2 && !validator.isLength(address2, { min: 6, max: 200 })) {
         errors.address2 = 'Your address should have between 6 and 200 characters.';
       }

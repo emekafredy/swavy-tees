@@ -1,31 +1,23 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('Shippings', {
-    id: {
+  up: (queryInterface, Sequelize) => queryInterface.createTable('shipping', {
+    shipping_id: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
       type: Sequelize.INTEGER
     },
-    shippingType: {
+    shipping_type: {
       allowNull: false,
       type: Sequelize.STRING(100)
     },
-    shippingCost: {
+    shipping_cost: {
       allowNull: false,
       type: Sequelize.DECIMAL(10, 2)
     },
-    shippingRegionId: {
+    shipping_region_id: {
       allowNull: false,
       type: Sequelize.INTEGER
-    },
-    createdAt: {
-      allowNull: false,
-      type: Sequelize.DATE
-    },
-    updatedAt: {
-      allowNull: false,
-      type: Sequelize.DATE
     }
   }),
-  down: queryInterface => queryInterface.dropTable('Shippings')
+  down: queryInterface => queryInterface.dropTable('shipping')
 };
