@@ -46,7 +46,6 @@ const sessionConfig = {
   }
 };
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(cors({
   credentials: true,
   origin: true
@@ -59,6 +58,8 @@ myStore.sync();
 
 modules(app);
 app.use(notFound);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 export const server = app.listen(port, () => log.info(`🚀 App server is running on http://localhost:${port} 🚀`));
 
