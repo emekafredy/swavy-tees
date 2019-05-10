@@ -60,7 +60,6 @@ modules(app);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(notFound);
 
-
 export const server = app.listen(port, () => log.info(`🚀 App server is running on http://localhost:${port} 🚀`));
 
 export default app;
