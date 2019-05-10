@@ -6,7 +6,7 @@ import cors from 'cors';
 import session from 'express-session';
 import connectSession from 'connect-session-sequelize';
 import swaggerUi from 'swagger-ui-express';
-import swaggerDocument from './server/docs/swagger.json';
+import swaggerDocument from './swagger.json';
 
 import modules from './server/modules';
 import notFound from './server/modules/notFound';
@@ -46,7 +46,6 @@ const sessionConfig = {
   }
 };
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(cors({
   credentials: true,
   origin: true
@@ -58,7 +57,9 @@ app.use(session(sessionConfig));
 myStore.sync();
 
 modules(app);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(notFound);
+
 
 export const server = app.listen(port, () => log.info(`🚀 App server is running on http://localhost:${port} 🚀`));
 
