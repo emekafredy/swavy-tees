@@ -13,7 +13,7 @@
     "mig": "sequelize db:migrate",
     "undo:mig": "sequelize db:migrate:undo:all",
     "clean": "rm -rf build && mkdir build",
-    "build": "yarn clean && babel ./ --out-dir build/ --ignore ./views,./coverage,./public,./node_modules,./.babelrc,./package.json",
+    "build": "yarn clean && babel ./ --out-dir build/ --ignore ./views,./coverage,./public,./node_modules,./.babelrc,./package.json && cp ./swagger.json ./build",
     "start": "yarn build && node ./build/index.js"
   },
   "repository": "https://github.com/emekafredy/swavy-tees.git",
