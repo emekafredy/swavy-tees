@@ -1,0 +1,627 @@
+{
+  "swagger": "2.0",
+  "info": {
+      "version": "1.0.0",
+      "title": "Swavy Tees",
+      "description": "API documentation for Swavy Tees Online Shop",
+      "license": {
+          "name": "MIT 2.0.0",
+          "url": "https://swavy-tees.herokuapp.com"
+      }
+  },
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "basePath": "/",
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+      "application/json"
+  ],
+  "tags": [
+    {
+      "name": "Products",
+      "description": "Access all endpoints associated with available products."
+    },
+    {
+      "name": "Categories",
+      "description": "Access endpoints associated with product categories."
+    },
+    {
+      "name": "Departments",
+      "description": "Access endpoints associated with categories department."
+    },
+    {
+      "name": "Cart",
+      "description": "Access endpoints associated with shopping cart."
+    },
+    {
+      "name": "Users",
+      "description": "Access endpoints associated with users."
+    },
+    {
+      "name": "Orders",
+      "description": "Access endpoints associated with orders."
+    },
+    {
+      "name": "Shipping Regions",
+      "description": "Access endpoints associated with shipping regions."
+    }
+  ],
+  "paths": {
+    "/api/products": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Gets all products in the application",
+        "responses": {
+            "200": {
+                "description": "Products succesfully retrieved"
+            },
+            "404": {
+                "description": "No product found for now"
+            },
+            "500": {
+              "description": "server error"
+            }
+        }
+      }
+    },
+    "/api/products?": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Gets products by pages, categories and keywords",
+          "parameters": [
+              {
+                "name": "page",
+                "in": "query",
+                "required": false,
+                "type": "number",
+                "description": "get products by pages"
+              },
+              {
+                "name": "category",
+                "in": "query",
+                "required": false,
+                "type": "string",
+                "description": "get products by categories"
+              },
+              {
+                "name": "keyword",
+                "in": "query",
+                "required": false,
+                "type": "string",
+                "description": "search for products by keywords"
+              }
+          ],
+          "responses": {
+            "200": {
+              "description": "Products succesfully retrieved"
+            },
+            "404": {
+              "description": "No product found for now"
+            },
+            "500": {
+              "description": "Server error"
+            }
+        }
+      }
+    },
+    "/api/products/product/{id}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get a single product by its id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of the product"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product succesfully retrieved"
+          },
+          "404": {
+            "description": "Product not found"
+          },
+          "500": {
+            "description": "Server error."
+          }
+        }
+      }
+    },
+    "/api/product-categories": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Get all product categories",
+        "responses": {
+          "200": {
+            "description": "Categories succesfully retrieved"
+          },
+          "500": {
+            "description": "Server error."
+          }
+        }
+      }
+    },
+    "/api/departments": {
+      "get": {
+        "tags": [
+          "Departments"
+        ],
+        "summary": "Get all categories departments",
+        "responses": {
+          "200": {
+            "description": "Departments succesfully retrieved"
+          },
+          "500": {
+            "description": "Server error."
+          }
+        }
+      }
+    },
+    "/api/shopping-cart": {
+      "get": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "Get all products in cart for a user/also generates a unique cart id for a user",
+        "responses": {
+          "200": {
+            "description": "Cart succesfully retrieved"
+          },
+          "500": {
+            "description": "Server error."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "Delete all products in cart for a user",
+        "responses": {
+          "200": {
+            "description": "Cart succesfully cleared"
+          },
+          "404": {
+            "description": "Product not found"
+          },
+          "500": {
+            "description": "Server error."
+          }
+        }
+      }
+    },
+    "/api/shopping-cart/{productId}": {
+      "post": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "Add products to cart for a user",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "description": "ID of the product to be added to cart"
+          },
+          {
+            "name": "cart",
+            "in": "body",
+            "description": "Add-to-cart data",
+            "schema": {
+                "$ref": "#/definitions/add_to_cart"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cart succesfully retrieved"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Product not found"
+          },
+          "409": {
+            "description": "conflict error"
+          },
+          "500": {
+            "description": "Server error."
+          }
+        }
+      }
+    },
+    "/api/shopping-cart/{id}": {
+      "put": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "Update product quantity in the user's cart",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "description": "ID of the cart to be updated"
+          },
+          {
+            "name": "update product in cart",
+            "in": "body",
+            "description": "Update cart quantity",
+            "schema": {
+              "$ref": "#/definitions/update_cart"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cart succesfully retrieved"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Cart not found"
+          },
+          "500": {
+            "description": "Server error."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "Remove a product from the user's cart",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "description": "ID of the cart to be removed"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cart succesfully retrieved"
+          },
+          "404": {
+            "description": "Cart not found"
+          },
+          "500": {
+            "description": "Server error."
+          }
+        }
+      }
+    },
+    "/api/users/register": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Register a new user",
+        "parameters": [
+          {
+            "name": "customer",
+            "in": "body",
+            "description": "Customer signup data",
+            "schema": {
+                "$ref": "#/definitions/customer_signup"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User succesfully registered"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "409": {
+            "description": "email conflict error"
+          },
+          "500": {
+            "description": "Server error."
+          }
+        }
+      }
+    },
+    "/api/users/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Login a registered user",
+        "parameters": [
+          {
+            "name": "customer login",
+            "in": "body",
+            "description": "Customer signup data",
+            "schema": {
+                "$ref": "#/definitions/customer_login"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User succesfully logged in"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Server error."
+          }
+        }
+      }
+    },
+    "/api/user": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get a user's profile",
+        "security": [
+          {
+              "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile loaded"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "No token provided"
+          },
+          "500": {
+            "description": "Server error."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update a user's profile",
+        "parameters": [
+          {
+            "name": "Update profile",
+            "in": "body",
+            "description": "Customer signup data",
+            "schema": {
+                "$ref": "#/definitions/profile_update"
+            }
+          }
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User's profile succesfully updated"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "No token provided"
+          },
+          "500": {
+            "description": "Server error."
+          }
+        }
+      }
+    },
+    "/api/charge": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Make payments on items in cart",
+        "parameters": [
+          {
+            "name": "stripeToken",
+            "in": "body",
+            "required": true,
+            "type": "string",
+            "description": "User's token generated from stripe"
+          },
+          {
+            "name": "stripeEmail",
+            "in": "body",
+            "required": true,
+            "type": "string",
+            "description": "User's email address"
+          }
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment successful"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Payment not successfull."
+          }
+        }
+      }
+    },
+    "/api/orders": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Get all orders made by a logged in user",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Orders successfully retrieved"
+          },
+          "404": {
+            "description": "No order for this user"
+          },
+          "500": {
+            "description": "Server error."
+          }
+        }
+      }
+    },
+    "/api/regions": {
+      "get": {
+        "tags": [
+          "Shipping Regions"
+        ],
+        "summary": "Get all shipping regions and their shipping types",
+        "responses": {
+          "200": {
+            "description": "Regions successfully retrieved"
+          },
+          "500": {
+            "description": "Server error."
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "Bearer": {
+        "description": "For accessing the API a valid JWT token must be passed in all the queries in\nthe 'Authorization' header.\n\n\nA valid JWT token is generated by the API and returned as answer of a call\nto the route /api/users/login giving a valid user & password.\n\n\nThe following syntax must be used in the 'Authorization' header :\n\n    Bearer xxxxxx.yyyyyyy.zzzzzz\n",
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+    }
+  },
+  "definitions": {
+    "customer_signup": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "required": true
+        },
+        "email": {
+            "type": "string",
+            "required": true
+        },
+        "password": {
+          "type": "string",
+          "required": true
+        },
+        "confirmPassword": {
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    "add_to_cart": {
+      "properties": {
+        "colorId": {
+          "type": "number",
+          "required": true
+        },
+        "sizeId": {
+            "type": "number",
+            "required": true
+        },
+        "quantity": {
+          "type": "number",
+          "required": true
+        }
+      }
+    },
+    "update_cart": {
+      "properties": {
+        "quantity": {
+          "type": "number",
+          "required": true
+        }
+      }
+    },
+    "customer_login": {
+      "properties": {
+        "email": {
+            "type": "string",
+            "required": true
+        },
+        "password": {
+          "type": "string",
+          "required": true
+        }
+      }
+    },
+    "profile_update": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "required": false
+        },
+        "address1": {
+          "type": "string",
+          "required": false
+        },
+        "address2": {
+          "type": "string",
+          "required": false
+        },
+        "city": {
+          "type": "string",
+          "required": false
+        },
+        "region": {
+          "type": "string",
+          "required": false
+        },
+        "postalCode": {
+          "type": "string",
+          "required": false
+        },
+        "country": {
+          "type": "string",
+          "required": false
+        },
+        "dayPhone": {
+          "type": "string",
+          "required": false
+        },
+        "eveningPhone": {
+          "type": "string",
+          "required": false
+        },
+        "mobilePhone": {
+          "type": "string",
+          "required": false
+        }
+      }
+    }
+  }
+}

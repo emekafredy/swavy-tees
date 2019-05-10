@@ -16,7 +16,7 @@ This is the server for the full-stack application. The front-end repository can 
 
 
 
-# Installation
+## Installation
 
 - filepath> git clone https://github.com/emekafredy/swavy-tees.git
 - move to the project directory with `cd swavy-tees`
@@ -30,32 +30,12 @@ This is the server for the full-stack application. The front-end repository can 
 - You should be able to test the endpoints below with `postman` or its likes.
 
 
-# API Endpoints
-- every endpoint is prefixed with `/api`
+## API Endpoints
 
- | Method | Description | Endpoints |
- | ------ | ----------- | --------- |
- | GET | Get all products in the app | /products |
- | GET | Get all products in a queried category | /products?category=`categoryName` |
- | GET | Get all products in a queried keyword | /products?keyword=`keywordName` |
- | POST | Users Sign Up | /register |
- | POST | Users Login | /login |
- | GET | Get a logged-in User's profile | /user |
- | PUT | Update a logged-in User's profile | /user |
- | GET | Get product categories | /product-categories |
- | GET | Get departments | /departments |
- | GET | Get a single product | /products/product/`:id` |
- | POST | Add a product to cart | /shopping-cart/`:productId` |
- | GET | Get all products added in cart | /shopping-cart |
- | DELETE |  Remove a product from cart | /shopping-cart/`:cartId` |
- | PUT |  Update product quantity in cart | /shopping-cart/`:cartId` |
- | DELETE |  Clear all products in the cart | /shopping-cart |
- | POST |  Make payment for products with stripe | /charge |
- | GET |  Get all orders made | /orders |
- | GET |  Get all shipping regions | /regions |
-
+## API documentation
+- [Documentation](https://swavy-tees.herokuapp.com/api-docs)
  
- # Request Examples
+## Request Examples
 
  - get all products - `{url}/api/products`
  - get products by categories - `{url}/api/products?category=French`
@@ -96,13 +76,10 @@ included fields: `firstName`, `lastName`, `address1`, `address2`, `city`, `posta
 ```
 
 
-# Production API 
+## Production API 
 - [api](https://swavy-tees.herokuapp.com/api)
 
 - If you wish to test the app from the browser, you should get the Front-end repo [here](https://github.com/emekafredy/swavy-tees-react) and follow the installation instructions.
 
-# API documentation
-- Coming up soon
-
-# Author
+## Author
 - Emeka Samuel Chinedu
