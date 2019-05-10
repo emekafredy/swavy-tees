@@ -5,8 +5,6 @@ import exphbs from 'express-handlebars';
 import cors from 'cors';
 import session from 'express-session';
 import connectSession from 'connect-session-sequelize';
-import swaggerUi from 'swagger-ui-express';
-import swaggerDocument from './server/docs/swagger.json';
 
 import modules from './server/modules';
 import notFound from './server/modules/notFound';
