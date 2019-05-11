@@ -9,23 +9,28 @@ Router.post(
 );
 
 Router.get(
-  '/shopping-cart',
+  '/shopping-cart/:cartId',
   CartsController.getShoppingCart
 );
 
 Router.delete(
-  '/shopping-cart/:id',
+  '/shopping-cart/:cartId/:id',
   CartsController.removeProductFromCart
 );
 
 Router.put(
-  '/shopping-cart/:id',
+  '/shopping-cart/:cartId/:id',
   CartsController.updateProductQuantity
 );
 
 Router.delete(
-  '/shopping-cart',
+  '/shopping-cart/:cartId',
   CartsController.clearCart
+);
+
+Router.post(
+  '/cart/generateId',
+  CartsController.generateCartId
 );
 
 export default Router;

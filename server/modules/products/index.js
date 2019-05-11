@@ -23,4 +23,9 @@ Router.get(
   ProductsController.getProductById
 );
 
+Router.get(
+  '/products/department/:id',
+  ProductsController.getProductsByDepartment
+);
+
 export default Router;

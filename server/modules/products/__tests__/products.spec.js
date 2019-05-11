@@ -154,4 +154,45 @@ describe('Products Endpoint', () => {
         done();
       });
   });
+
+  it('should fetch all products associated to a department', (done) => {
+    request(app)
+      .get('/api/products/department/1')
+      .set('Content-Type', 'application/json')
+      .end((err, res) => {
+        const { success, message } = res.body;
+        expect(success).toEqual(true);
+        expect(message).toEqual('Department products succesfully retrieved');
+        if (err) return done(err);
+        done();
+      });
+  });
+
+  it('should throw a 404 error if department does not exist', (done) => {
+    request(app)
+      .get('/api/products/department/50')
+      .set('Content-Type', 'application/json')
+      .end((err, res) => {
+        const { success, error } = res.body;
+        expect(success).toEqual(false);
+        expect(error).toEqual('Department not found');
+        if (err) return done(err);
+        done();
+      });
+  });
+
+  describe('get cart', () => {
+    it('should fetch a logged in user\'s cart', (done) => {
+      request(app)
+        .get('/api/shopping-cart/89867578hihk')
+        .set('Content-Type', 'application/json')
+        .end((err, res) => {
+          const { success, message } = res.body;
+          expect(success).toEqual(true);
+          expect(message).toEqual('No product found in your cart');
+          if (err) return done(err);
+          done();
+        });
+    });
+  });
 });

@@ -176,3 +176,33 @@ export const productAttributeData = [
   { product_id: 6, attribute_value_id: 1 },
   { product_id: 6, attribute_value_id: 5 },
 ];
+
+export const cartData = [
+  {
+    item_id: 1,
+    cart_id: 'ijkiiuoejhkni',
+    product_id: 1,
+    attributes: 'Red,L',
+    quantity: 3,
+    buy_now: 1,
+    added_on: '2019-05-10 14:28:10'
+  },
+  {
+    item_id: 2,
+    cart_id: 'ijkiiuoejhkni',
+    product_id: 2,
+    attributes: 'Black,S',
+    quantity: 3,
+    buy_now: 1,
+    added_on: '2019-05-10 14:28:10'
+  },
+  {
+    item_id: 3,
+    cart_id: 'ijkiiuoejhkni',
+    product_id: 1,
+    attributes: 'Blue,L',
+    quantity: 3,
+    buy_now: 1,
+    added_on: '2019-05-10 14:28:10'
+  }
+];

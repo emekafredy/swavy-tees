@@ -19,9 +19,8 @@ class CartsController {
    */
   static async addProductToCart(req, res) {
     const { productId } = req.params;
-    const { cartId } = req.session;
     const {
-      sizeId, colorId, quantity
+      sizeId, colorId, quantity, cartId
     } = req.body;
 
     try {
@@ -71,7 +70,23 @@ class CartsController {
       };
 
       await models.ShoppingCart.create(addedProduct);
-      return CartsController.getShoppingCart(req, res);
+      return CartsController.getShoppingCart(req, res, cartId);
+    } catch (error) { /* istanbul ignore next */
+      return errorResponse(error, 500, res);
+    }
+  }
+
+  /**
+ * @description query to generate a cart id
+ * @static
+ * @param {object} req express request object
+ * @param {object} res express response object
+ * @memberof CartsController
+ */
+  static async generateCartId(req, res) {
+    try {
+      const uniqueId = uniqid();
+      return res.status(201).json({ success: true, cartId: uniqueId });
     } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }
@@ -84,16 +99,12 @@ class CartsController {
  * @param {object} res express response object
  * @memberof CartsController
  */
-  static async getShoppingCart(req, res) {
+  static async getShoppingCart(req, res, cartIdParam) {
     try {
-      // eslint-disable-next-line prefer-destructuring
-      if (!req.session.cartId) {
-        const uniqueId = uniqid();
-        req.session.cartId = uniqueId;
-      }
+      const { cartId } = req.params;
 
       const cart = await models.ShoppingCart.findAll({
-        where: { cart_id: req.session.cartId },
+        where: { cart_id: cartId || cartIdParam },
         include: [{
           model: models.Product,
           attributes: { exclude: ['createdAt', 'updatedAt'], },
@@ -164,8 +175,7 @@ class CartsController {
    * @memberof CartsController
    */
   static async removeProductFromCart(req, res) {
-    const { id } = req.params;
-    const { cartId } = req.session;
+    const { id, cartId } = req.params;
     try {
       const cartProduct = await models.ShoppingCart.findOne({
         where: { item_id: id, cart_id: cartId },
@@ -190,8 +200,7 @@ class CartsController {
    * @memberof CartsController
    */
   static async updateProductQuantity(req, res) {
-    const { id } = req.params;
-    const { cartId } = req.session;
+    const { id, cartId } = req.params;
     const { quantity } = req.body;
     
     try {
@@ -219,7 +228,7 @@ class CartsController {
    * @memberof CartsController
    */
   static async clearCart(req, res) {
-    const { cartId } = req.session;
+    const { cartId } = req.params;
     try {
       const cart = await models.ShoppingCart.findOne({ where: { cart_id: cartId } });
 

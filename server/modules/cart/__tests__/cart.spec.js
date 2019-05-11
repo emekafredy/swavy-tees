@@ -9,7 +9,8 @@ import {
   productCategories,
   attributeData,
   attributeValueData,
-  productAttributeData
+  productAttributeData,
+  cartData
 } from '../../products/__tests__/productData/products';
 
 describe('Carts', () => {
@@ -22,6 +23,7 @@ describe('Carts', () => {
     await models.Attribute.destroy({ force: true, truncate: { cascade: true } });
     await models.AttributeValue.destroy({ force: true, truncate: { cascade: true } });
     await models.ProductAttribute.destroy({ force: true, truncate: { cascade: true } });
+    await models.ShoppingCart.destroy({ force: true, truncate: { cascade: true } });
     await models.Department.bulkCreate(departmentsData);
     await models.Category.bulkCreate(categoriesData);
     await models.Product.bulkCreate(productsData);
@@ -29,6 +31,7 @@ describe('Carts', () => {
     await models.Attribute.bulkCreate(attributeData);
     await models.AttributeValue.bulkCreate(attributeValueData);
     await models.ProductAttribute.bulkCreate(productAttributeData);
+    await models.ShoppingCart.bulkCreate(cartData);
   });
   afterAll(async () => {
     await server.close();
@@ -40,17 +43,30 @@ describe('Carts', () => {
     await models.Attribute.destroy({ force: true, truncate: { cascade: true } });
     await models.AttributeValue.destroy({ force: true, truncate: { cascade: true } });
     await models.ProductAttribute.destroy({ force: true, truncate: { cascade: true } });
+    await models.ShoppingCart.destroy({ force: true, truncate: { cascade: true } });
   });
 
   describe('add to cart', () => {
-    it('should fetch cart for users session', (done) => {
+    it('should generate a cart id', (done) => {
       request(app)
-        .get('/api/shopping-cart')
+        .post('/api/cart/generateId')
+        .set('Content-Type', 'application/json')
+        .end((err, res) => {
+          const { success } = res.body;
+          expect(success).toEqual(true);
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should fetch cart for user', (done) => {
+      request(app)
+        .get('/api/shopping-cart/ijkiiuoejhkni')
         .set('Content-Type', 'application/json')
         .end((err, res) => {
           const { success, message } = res.body;
           expect(success).toEqual(true);
-          expect(message).toEqual('No product found in your cart');
+          expect(message).toEqual('cart succesfully retrieved');
           if (err) return done(err);
           done();
         });
@@ -63,7 +79,8 @@ describe('Carts', () => {
         .send({
           quantity: 2,
           colorId: 2,
-          sizeId: 1
+          sizeId: 1,
+          cartId: 'ijkiiuoejhkni'
         })
         .end((err, res) => {
           const { success, error } = res.body;
@@ -81,7 +98,8 @@ describe('Carts', () => {
         .send({
           quantity: 2,
           colorId: 5,
-          sizeId: 4
+          sizeId: 4,
+          cartId: 'ijkiiuoejhkni'
         })
         .end((err, res) => {
           const { success, error } = res.body;
@@ -99,7 +117,8 @@ describe('Carts', () => {
         .send({
           quantity: 2,
           colorId: '',
-          sizeId: 1
+          sizeId: 1,
+          cartId: 'ijkiiuoejhkni'
         })
         .end((err, res) => {
           const { success, errors } = res.body;
@@ -117,7 +136,8 @@ describe('Carts', () => {
         .send({
           quantity: 2,
           colorId: 2,
-          sizeId: ''
+          sizeId: '',
+          cartId: 'ijkiiuoejhkni'
         })
         .end((err, res) => {
           const { success, errors } = res.body;
@@ -127,17 +147,21 @@ describe('Carts', () => {
           done();
         });
     });
-  });
 
-  describe('get cart', () => {
-    it('should fetch a logged in user\'s cart', (done) => {
+    it('should successfully add product to cart', (done) => {
       request(app)
-        .get('/api/shopping-cart')
+        .post('/api/shopping-cart/1')
         .set('Content-Type', 'application/json')
+        .send({
+          quantity: 2,
+          colorId: 4,
+          sizeId: 1,
+          cartId: 'ijkiiuoejhkni'
+        })
         .end((err, res) => {
           const { success, message } = res.body;
           expect(success).toEqual(true);
-          expect(message).toEqual('No product found in your cart');
+          expect(message).toEqual('cart succesfully retrieved');
           if (err) return done(err);
           done();
         });
@@ -147,12 +171,27 @@ describe('Carts', () => {
   describe('update product quantity', () => {
     it('should throw an error if cart product is not found', (done) => {
       request(app)
-        .put('/api/shopping-cart/4')
+        .put('/api/shopping-cart/ijkiiuoejhkni/50')
         .set('Content-Type', 'application/json')
         .send({ quantity: 4 })
         .end((err, res) => {
-          const { success } = res.body;
+          const { success, error } = res.body;
           expect(success).toEqual(false);
+          expect(error).toEqual('Cart product not found');
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should successfully update the quantity of a product in cart', (done) => {
+      request(app)
+        .put('/api/shopping-cart/ijkiiuoejhkni/1')
+        .set('Content-Type', 'application/json')
+        .send({ quantity: 4 })
+        .end((err, res) => {
+          const { success, message } = res.body;
+          expect(success).toEqual(true);
+          expect(message).toEqual('cart succesfully retrieved');
           if (err) return done(err);
           done();
         });
@@ -162,11 +201,24 @@ describe('Carts', () => {
   describe('remove product from cart', () => {
     it('should throw an error if cart product is not found', (done) => {
       request(app)
-        .delete('/api/shopping-cart/4')
+        .delete('/api/shopping-cart/ijkiiuoejhkni/10')
         .set('Content-Type', 'application/json')
         .end((err, res) => {
           const { success } = res.body;
           expect(success).toEqual(false);
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should successfully remove a product from cart', (done) => {
+      request(app)
+        .delete('/api/shopping-cart/ijkiiuoejhkni/1')
+        .set('Content-Type', 'application/json')
+        .end((err, res) => {
+          const { success, message } = res.body;
+          expect(success).toEqual(true);
+          expect(message).toEqual('cart succesfully retrieved');
           if (err) return done(err);
           done();
         });
@@ -176,11 +228,24 @@ describe('Carts', () => {
   describe('clear cart', () => {
     it('should throw an error if no product was found in cart', (done) => {
       request(app)
-        .delete('/api/shopping-cart')
+        .delete('/api/shopping-cart/90u9u876t7ytfy')
         .set('Content-Type', 'application/json')
         .end((err, res) => {
           const { success } = res.body;
           expect(success).toEqual(false);
+          if (err) return done(err);
+          done();
+        });
+    });
+
+    it('should successfully clear cart', (done) => {
+      request(app)
+        .delete('/api/shopping-cart/ijkiiuoejhkni')
+        .set('Content-Type', 'application/json')
+        .end((err, res) => {
+          const { success, message } = res.body;
+          expect(success).toEqual(true);
+          expect(message).toEqual('Cart successfully cleared');
           if (err) return done(err);
           done();
         });
