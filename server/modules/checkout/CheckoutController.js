@@ -1,6 +1,7 @@
 import stripe from 'stripe';
 import models from '../../database/models';
 import { errorResponse } from '../../helpers/errorResponse';
+import { sendOrderConfirmation } from '../../helpers/mail/mailer';
 
 
 const stripeKey = stripe(process.env.STRIPE_SECRET_KEY);
@@ -28,10 +29,8 @@ class CheckoutController {
    * @param {object} res express response object
    * @memberof CheckoutController
    */
-  /* istanbul ignore next */
-  static async checkout(req, res, purchasePrice, shippingId, stripeEmail, stripeToken) {
+  static async checkout(req, res, purchasePrice, shippingId, stripeEmail, stripeToken, cartId) {
     const userId = req.user;
-    const { cartId } = req.session;
     try {
       const customer = await stripeKey.customers.create({
         email: stripeEmail,
@@ -53,9 +52,11 @@ class CheckoutController {
         }]
       });
 
+      const user = await models.Customer.findOne({ where: { customer_id: userId } });
+
       if (cart.length !== 0) {
         const cartValues = await Promise.all(cart.map(async product => ({
-          total_amount: parseFloat(product.quantity * product.Product.price),
+          total_amount: parseFloat(product.quantity * product.Product.price).toFixed(2),
           created_on: new Date(),
           comments: payment.description,
           customer_id: userId,
@@ -70,6 +71,7 @@ class CheckoutController {
         })));
         const createOrder = await models.Order.bulkCreate(cartValues);
         if (createOrder) {
+          await sendOrderConfirmation(user.name, cartValues, user.email);
           await models.ShoppingCart.destroy({ where: { cart_id: cartId } });
           return res.status(200).json({
             success: true,
@@ -92,8 +94,9 @@ class CheckoutController {
    */
   /* istanbul ignore next */
   static async makePayment(req, res) {
-    const { stripeEmail, stripeToken, shippingId } = req.body;
-    const { cartId } = req.session;
+    const {
+      stripeEmail, stripeToken, shippingId, cartId
+    } = req.body;
     try {
       const shippingExists = await models.Shipping.findByPk(shippingId);
       if (!shippingExists) {
@@ -123,7 +126,7 @@ class CheckoutController {
       const totalPrice = subTotalPrices - productsDiscount;
       const purchasePrice = Math.round((totalPrice + costForShipping) * 100);
 
-      return CheckoutController.checkout(req, res, purchasePrice, shippingExists.id, stripeEmail, stripeToken);
+      return CheckoutController.checkout(req, res, purchasePrice, shippingExists.shipping_id, stripeEmail, stripeToken, cartId);
     } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);
     }

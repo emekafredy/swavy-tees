@@ -2,6 +2,7 @@ import { Op } from 'sequelize';
 import models from '../../database/models';
 import { errorResponse } from '../../helpers/errorResponse';
 import { getAttributes } from '../../helpers/getAttributes';
+
 /**
  * @class ProductsController
  */
@@ -15,7 +16,7 @@ class ProductsController {
   static getPagination(req) {
     let { page } = req.query;
     page = page || 1;
-    const limit = 12;
+    const limit = 9;
     const offset = limit * (page - 1);
     return {
       page, limit, offset,
@@ -203,6 +204,43 @@ class ProductsController {
           colors: colorValues,
           sizes: sizeValues,
         }
+      });
+    } catch (error) { /* istanbul ignore next */
+      return errorResponse(error, 500, res);
+    }
+  }
+
+  static async getProductsByDepartment(req, res) {
+    const { id } = req.params;
+    try {
+      const department = await models.Department.findOne({
+        where: { department_id: id },
+        include: [{
+          model: models.Category,
+          attributes: { exclude: ['createdAt', 'updatedAt'] },
+          include: [{
+            model: models.Product,
+            as: 'products',
+            attributes: { exclude: ['createdAt', 'updatedAt'] },
+          }]
+        }]
+      });
+
+      if (!department) {
+        const error = 'Department not found';
+        return errorResponse(error, 404, res);
+      }
+
+      const values = await department.Categories.map(product => product);
+      const products = values.map(item => item.products);
+      const myNewArray = products.reduce((prev, curr) => prev.concat(curr));
+
+      return res.status(200).json({
+        success: true,
+        message: 'Department products succesfully retrieved',
+        products: myNewArray,
+        departmentName: department.name,
+        departmentDescription: department.description
       });
     } catch (error) { /* istanbul ignore next */
       return errorResponse(error, 500, res);

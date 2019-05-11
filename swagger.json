@@ -170,12 +170,61 @@
         }
       }
     },
-    "/api/shopping-cart": {
+    "/api/products/department/{id}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Gets all products associated to a specified department",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of the department"
+          }
+        ],
+        "responses": {
+            "200": {
+                "description": "Products succesfully retrieved"
+            },
+            "404": {
+                "description": "Department not found"
+            },
+            "500": {
+              "description": "server error"
+            }
+        }
+      }
+    },
+    "/api/cart/generateId": {
+      "post": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "Generate a unique cart id for a user of none exists",
+        "responses": {
+          "200": {
+            "description": "Cart id created"
+          },
+          "500": {
+            "description": "Server error."
+          }
+        }
+      }
+    },
+    "/api/shopping-cart/{cartId}": {
       "get": {
         "tags": [
           "Cart"
         ],
-        "summary": "Get all products in cart for a user/also generates a unique cart id for a user",
+        "summary": "Get all products in cart for a user",
+        "parameters": [
+          {
+            "name": "cartId",
+            "in": "path",
+            "description": "Id of the cart"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Cart succesfully retrieved"
@@ -245,7 +294,7 @@
         }
       }
     },
-    "/api/shopping-cart/{id}": {
+    "/api/shopping-cart/{cartId}/{id}": {
       "put": {
         "tags": [
           "Cart"
@@ -257,6 +306,13 @@
             "in": "path",
             "required": true,
             "type": "number",
+            "description": "Unique id of the cart to be updated"
+          },
+          {
+            "name": "cartId",
+            "in": "path",
+            "required": true,
+            "type": "string",
             "description": "ID of the cart to be updated"
           },
           {
@@ -555,6 +611,10 @@
         },
         "quantity": {
           "type": "number",
+          "required": true
+        },
+        "cartId": {
+          "type": "string",
           "required": true
         }
       }
