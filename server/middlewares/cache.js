@@ -2,7 +2,13 @@ import redis from 'redis';
 
 require('dotenv').config();
 
-const client = redis.createClient();
+let client;
+
+if (process.env.NODE_ENV === 'production') {
+  client = redis.createClient(process.env.REDISCLOUD_URL);
+} else {
+  client = redis.createClient();
+}
 
 // eslint-disable-next-line import/prefer-default-export
 export const cacheMiddleware = (req, res, next) => {
