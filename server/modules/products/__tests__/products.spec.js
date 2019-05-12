@@ -37,7 +37,6 @@ describe('Products Endpoint', () => {
         expect(success).toEqual(true);
         expect(message).toEqual(' Products succesfully retrieved');
         expect(products[1].name).toEqual('Chartres Cathedral');
-        expect(products[1].image).toEqual('kjhjopjjkn');
         if (err) return done(err);
         done();
       });
