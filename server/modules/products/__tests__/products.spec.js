@@ -52,7 +52,6 @@ describe('Products Endpoint', () => {
         expect(success).toEqual(true);
         expect(message).toEqual('French Products succesfully retrieved');
         expect(products[1].name).toEqual('Chartres Cathedral');
-        expect(products[1].image).toEqual('chartres-cathedral.gif');
         if (err) return done(err);
         done();
       });
